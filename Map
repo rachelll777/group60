@@ -1,0 +1,76 @@
+#include <algorithm>
+#include <cmath>
+#include <cstring>
+#include <iostream>
+#include <vector>
+#include <string>
+#include <fstream>
+#include <iomanip>
+#include <iostream>
+#include <stdlib.h>
+
+#include <conio.h>
+#include <unistd.h>
+
+#include "map.h"
+
+using namespace std;
+
+vector<vector<string>> baseMapTemplate =
+    {
+        {"#", "#", "#", "#", "#", "#", "#", "#", "#", "#"},
+        {"#", " ", " ", " ", " ", " ", "#", " ", " ", "#"},
+        {"#", " ", "#", "#", " ", "#", "#", "#", " ", "#"},
+        {"#", " ", " ", "#", " ", "#", " ", " ", " ", "#"}, 
+        {"#", "#", " ", "#", "#", "#", " ", "#", " ", "#"},
+        {"#", " ", " ", " ", " ", " ", " ", "#", " ", "#"},
+        {"#", " ", "#", "#", "#", "#", " ", "#", " ", "#"},
+        {"#", " ", " ", " ", " ", " ", " ", " ", " ", "#"},
+        {"#", " ", "#", "#", "#", "#", "#", "#", " ", "#"},
+        {"#", "#", "#", "#", "#", "#", "#", "#", "#", "#"}
+    };
+
+
+// 在地图上随机放置元素
+void placeItemsRandomly(vector<vector<string>>& map) {
+    int size = map.size();
+    vector<string> items = {"1", "2", "C"}; // 要放置的物品
+    
+    // 收集所有可用的空位置
+    vector<pair<int, int>> availablePositions;
+    
+    for(int i = 1; i < size-1; i++) {
+        for(int j = 1; j < size-1; j++) {
+            if(map[i][j] == " ") { // 只有空通道才能放置物品
+                availablePositions.push_back({i, j});
+            }
+        }
+    }
+    
+    // 随机打乱可用位置
+    srand(time(0));
+    for(int i = 0; i < availablePositions.size(); i++) {
+        int swapWith = rand() % availablePositions.size();
+        swap(availablePositions[i], availablePositions[swapWith]);
+    }
+    
+    // 放置物品
+    int itemsToPlace = min(3, (int)availablePositions.size());
+    for(int i = 0; i < itemsToPlace; i++) {
+        int x = availablePositions[i].first;
+        int y = availablePositions[i].second;
+        map[x][y] = items[i];
+        cout << items[i] << " placed at position: (" << x << ", " << y << ")" << endl;
+    }
+}
+
+// 生成带有随机物品的地图
+vector<vector<string>> generateMapWithRandomItems() {
+    // 复制基础地图模板
+    vector<vector<string>> map = baseMapTemplate;
+    
+    // 随机放置物品
+    placeItemsRandomly(map);
+    
+    return map;
+}
