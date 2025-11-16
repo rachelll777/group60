@@ -9,8 +9,28 @@
 #include <iostream>
 #include <stdlib.h>
 
-#include <conio.h>
 #include <unistd.h>
+
+// 跨平台键盘输入处理
+#ifdef _WIN32
+    #include <conio.h>  // Windows 使用 conio.h
+#else
+    // macOS/Linux 使用 termios 实现 21getch()
+    #include <termios.h>
+    #include <stdio.h>
+    
+    int getch() {
+        struct termios oldt, newt;
+        int ch;
+        tcgetattr(STDIN_FILENO, &oldt);
+        newt = oldt;
+        newt.c_lflag &= ~(ICANON | ECHO);
+        tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+        ch = getchar();
+        tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+        return ch;
+    }
+#endif
 
 using namespace std;
 class Map {
