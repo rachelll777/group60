@@ -20,8 +20,8 @@ using namespace std;
 
 
 int input;
-int introSelect = 0; //0: Lore, 1: instructions, 2: gameScreen, 3: achievementScreen
-int introPrint = 0; //0: welcome, 1: lore, 2: instructions
+int introSelect = 0; // 0: menu, 1: instructions, 2: difficulty level, 3: progress saved
+int introPrint = 0; //0: menu, 1: instruction, 2: difficulty level
 
 string bGreen = "\033[1;32m"; // choose higher
 string bRed = "\033[1;31m"; // choose lower
@@ -110,10 +110,8 @@ void printIntroScreen() {
     string empty =                 "┃                                                                    ┃\n";
     vector<string> intro =        {"┃                      Race Against the Clock!                       ┃\n",
                                    "┃  An excellent courier should deliver the packages sound and fast!  ┃\n",
-                                   "┃                           Your Mission:                            ┃\n",
-                                   "┃       Pick up all packages and deliver them to the customer.       ┃\n",
                                    "┃                  The customer is getting impatient!                ┃\n",
-                                   "┃       Hurry up and wisely seek for short cuts to save steps!       ┃\n",
+                                   "┃       Hurry up and wisely seek short cuts to save steps!           ┃\n",
                                    "┃                            Good luck！                             ┃\n"};
     vector<string> lore =         {"┃              Oh, so you want to know lore about this?              ┃\n",
                                    "┃             Well... the game all started with a \033[;36mPanda\033[;37m.             ┃\n",
