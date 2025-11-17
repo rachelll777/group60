@@ -46,33 +46,32 @@ string white = "\033[0m";
 
 // Game rules text
 vector<string> gameRules = {
-    "┃                   Game Instructions                     ┃\n",
-    "┃                                                         ┃\n",
-    "┃  1. Choose difficulty: Small map(2 packages) or         ┃\n",
-    "┃     Large map(5 packages)                               ┃\n",
-    "┃  2. Use WASD keys to move on the map                    ┃\n",
-    "┃  3. Automatically pick up packages when stepping on     ┃\n",
-    "┃     package locations                                   ┃\n",
-    "┃  4. Automatically deliver all packages when stepping    ┃\n",
-    "┃     on customer location                                ┃\n",
-    "┃  5. Press Q to save game at any time                    ┃\n",
-    "┃  6. Deliver all packages within step limit to win       ┃\n",
-    "┃                                                         ┃\n",
-    "┃  Win Condition: Steps remaining >= 0 AND all packages   ┃\n",
-    "┃                 delivered                               ┃\n",
-    "┃  Lose Condition: Run out of steps with packages         ┃\n",
-    "┃                 remaining OR quit game                  ┃\n"
+    "┃                   Game Instructions                    ┃\n",
+    "┃                                                        ┃\n",
+    "┃  1. Choose difficulty: Rookie(small map, 2 packages)   ┃\n",
+    "┃     or Expert(large map, 5 packages)                   ┃\n",
+    "┃  2. Use WASD keys to move on the map                   ┃\n",
+    "┃  3. Automatically pick up packages when stepping on    ┃\n",
+    "┃     package locations                                  ┃\n",
+    "┃  4. Automatically deliver all packages at hand when    ┃\n",
+    "┃     stepping on customer location                      ┃\n",
+    "┃  5. Press Q to save game at any time                   ┃\n",
+    "┃  6. Deliver all packages to customer within step limit ┃\n",
+    "┃                                                        ┃\n",
+    "┃  Win Condition: Steps remaining >= 0 AND all packages  ┃\n",
+    "┃                 delivered to customer                  ┃\n",
+    "┃  Lose Condition: Run out of steps with packages        ┃\n",
+    "┃                 remaining OR quit game                 ┃\n"
 };
 
 vector<string> gameProgress = {
-    "┃                   Game Progress                       ┃\n",
+    "┃                     Game Progress                      ┃\n",
     "┃                                                        ┃\n",
-    "┃  Current Progress: New Game                          ┃\n",
-    "┃  Levels Completed: 0                                 ┃\n",
-    "┃  High Score: 0                                       ┃\n",
-    "┃  Total Packages Delivered: 0                         ┃\n",
-    "┃                                                        ┃\n",
-    "┃  Feature in development...                           ┃\n"
+    "┃  Current Progress: New Game                            ┃\n",
+    "┃  Position: 0,0                                         ┃\n",
+    "┃  Steps remaining: n                                    ┃\n", //n is the total number of steps
+    "┃  Packages Remaining: 2                                 ┃\n", 
+    "┃                                                        ┃\n"
 };
 
 // Function declarations
@@ -101,11 +100,11 @@ void printMainMenu() {
     string bottom = "┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\n";
     
     vector<string> title = {
-        "┃                 Race Against the Clock!                ┃\n",
+        "┃                Race Against the Clock!                 ┃\n",
         "┃    An excellent courier should deliver packages        ┃\n",
         "┃    quickly and safely! The customer is getting         ┃\n",
-        "┃    impatient! Find shortcuts to save steps!            ┃\n",
-        "┃                     Good Luck!                         ┃\n"
+        "┃    impatient, find shortcuts to save steps!            ┃\n",
+        "┃                      Good Luck!                        ┃\n"
     };
     
     vector<string> butt1high = {
@@ -173,7 +172,7 @@ void printInstructions() {
     cout << top;
     for(string line : gameRules) cout << line;
     cout << empty;
-    cout << "┃              Press Q to return to Main Menu           ┃\n";
+    cout << "┃              Press Q to return to Main Menu            ┃\n";
     cout << empty;
     cout << bottom;
 }
@@ -189,29 +188,29 @@ void printDifficultySelect() {
     };
     
     vector<string> easyHigh = {
-        "┃              ╭─────────────────────────────╮            ┃\n",
-        "┃              │ [1] Easy Mode - Small Map   │            ┃\n",
-        "┃              │     2 Packages              │            ┃\n",
-        "┃              ╰─────────────────────────────╯            ┃\n"
+        "┃              ╭─────────────────────────────╮           ┃\n",
+        "┃              │ [1] Rookie Mode- Small Map  │           ┃\n",
+        "┃              │     2 Packages              │           ┃\n",
+        "┃              ╰─────────────────────────────╯           ┃\n"
     };
     vector<string> easyNormal = {
-        "┃              [1] Easy Mode - Small Map (2 Packages)     ┃\n"
+        "┃              [1] Rookie Mode - Small Map (2 Packages)  ┃\n"
     };
     
     vector<string> hardHigh = {
-        "┃              ╭─────────────────────────────╮            ┃\n",
-        "┃              │ [2] Hard Mode - Large Map   │            ┃\n",
-        "┃              │     5 Packages              │            ┃\n",
-        "┃              ╰─────────────────────────────╯            ┃\n"
+        "┃              ╭─────────────────────────────╮           ┃\n",
+        "┃              │ [2] Expert Mode - Large Map │           ┃\n",
+        "┃              │     5 Packages              │           ┃\n",
+        "┃              ╰─────────────────────────────╯           ┃\n"
     };
     vector<string> hardNormal = {
-        "┃              [2] Hard Mode - Large Map (5 Packages)     ┃\n"
+        "┃              [2] Expert Mode - Large Map (5 Packages)  ┃\n"
     };
     
     vector<string> startHigh = {
-        "┃              ╭─────────────────────────────╮            ┃\n",
-        "┃              │ [3] Start Game              │            ┃\n",
-        "┃              ╰─────────────────────────────╯            ┃\n"
+        "┃              ╭─────────────────────────────╮           ┃\n",
+        "┃              │ [3] Start Game              │           ┃\n",
+        "┃              ╰─────────────────────────────╯           ┃\n"
     };
     vector<string> startNormal = {
         "┃              [3] Start Game                            ┃\n"
@@ -254,7 +253,7 @@ void printGameProgress() {
     cout << top;
     for(string line : gameProgress) cout << line;
     cout << empty;
-    cout << "┃              Press Q to return to Main Menu           ┃\n";
+    cout << "┃              Press Q to return to Main Menu            ┃\n";
     cout << empty;
     cout << bottom;
 }
@@ -266,23 +265,25 @@ void startGame() {
     string bottom = "┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\n";
     
     cout << top << empty;
-    cout << "┃                  Game Started!                      ┃\n";
+    cout << "┃            Ready to Race Against the Clock?            ┃\n";
     cout << empty;
     
     if(selectedDifficulty == EASY) {
-        cout << "┃                  Mode: Easy - Small Map             ┃\n";
-        cout << "┃                  Packages: 2                        ┃\n";
+        cout << "┃               You are a rookie courier                 ┃\n";
+        cout << "┃               New to the small town                    ┃\n";
+        cout << "┃               With 2 packages to deliver               ┃\n";
     } else {
-        cout << "┃                  Mode: Hard - Large Map             ┃\n";
-        cout << "┃                  Packages: 5                        ┃\n";
+        cout << "┃               You are an expert courier                ┃\n";
+        cout << "┃               Who is familiar with the city            ┃\n";
+        cout << "┃               With 5 packages to deliver               ┃\n";
     }
     
     cout << empty;
-    cout << "┃                  Use WASD to move                   ┃\n";
-    cout << "┃                  Press Q to save game               ┃\n";
-    cout << "┃                  Press ESC to return to menu        ┃\n";
-    cout << empty << empty;
-    cout << "┃                  Game feature in development...     ┃\n";
+    cout << "┃               Use WASD to move                         ┃\n";
+    cout << "┃               Press Q to save game                     ┃\n";
+    cout << "┃               Press ESC to return to menu              ┃\n";
+    cout << empty;
+    cout << "┃                      Good Luck!                        ┃\n";
     cout << empty;
     cout << bottom;
     
@@ -293,7 +294,7 @@ void startGame() {
             currentState = MAIN_MENU;
             break;
         } else if(input == 113 || input == 81) { // Q key
-            cout << "┃                  Game Saved!                       ┃\n";
+            cout << "┃                     Progress Saved                     ┃\n";
         }
     }
 }
