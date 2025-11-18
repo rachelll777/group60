@@ -149,6 +149,7 @@ void printMainMenu() {
     else 
         for(string line : butt2) cout << line;
 
+    // 只在存档文件存在时显示"继续游戏"选项
     if(saveFileExists) {
         if(menuSelection == 2) 
             for(string line : butt3high) cout << line;
@@ -288,25 +289,31 @@ void startGame() {
 void handleMainMenuInput() {
     input = getch();
     
-    int menuItemCount = saveFileExists ? 4 : 3;
-
+    // 动态计算菜单选项总数
+    int menuItemCount = saveFileExists ? 3 : 2; // 有存档：3选项，无存档：2选项
+    
     if(input == 87 || input == 119) { // W/w
-        menuSelection = (menuSelection - 1 + 3) % 3;
+        menuSelection = (menuSelection - 1 + menuItemCount) % menuItemCount;
     } else if(input == 83 || input == 115) { // S/s
-        menuSelection = (menuSelection + 1) % 3;
+        menuSelection = (menuSelection + 1) % menuItemCount;
     } else if(input == 13) { // Enter
         switch(menuSelection) {
-            case 0: currentState = INSTRUCTIONS; break;
-            case 1: currentState = DIFFICULTY_SELECT; break;
-            case 2: 
+            case 0: 
+                currentState = INSTRUCTIONS; 
+                break;
+            case 1: 
                 if(saveFileExists) {
-                    // 这里添加加载存档并开始游戏的逻辑
-                    cout << "Loading saved game..." << endl;
-                    // currentState = GAME_PLAYING; // 取消注释当你有加载功能时
-                    sleep(2); // 暂停2秒显示信息
+                    // 有存档时：选项1是继续游戏
+                    currentState = LOAD_GAME;
+                } else {
+                    // 无存档时：选项1是选择难度
+                    currentState = DIFFICULTY_SELECT;
                 }
                 break;
-
+            case 2:
+                // 有存档时：选项2是选择难度（新游戏）
+                currentState = DIFFICULTY_SELECT;
+                break;
         }
     } else if(input == 113 || input == 81) { // Q/q
         // Already in main menu, no action needed
@@ -340,6 +347,7 @@ int main() {
     cout << fixed << setprecision(2);
     srand(time(0));
 
+    // 检查存档文件是否存在
     saveFileExists = checkSaveFile();
     if(saveFileExists) {
         cout << "Save file found! 'Continue Game' option enabled." << endl;
@@ -374,6 +382,7 @@ int main() {
                 cout << "Loading game from save file..." << endl;
                 sleep(2);
                 currentState = GAME_PLAYING;
+                break;
         }
     }
     
