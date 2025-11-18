@@ -8,10 +8,9 @@
 #include <iomanip>
 #include <unistd.h>
 #include <sstream>
+#include <fstream>
 
 #include <Windows.h>
-#pragma execution_character_set("utf-8")
-
 #include <fcntl.h>
 
 using namespace std;
@@ -21,8 +20,8 @@ enum GameState {
     MAIN_MENU,
     INSTRUCTIONS,
     DIFFICULTY_SELECT,
-    GAME_PROGRESS,
-    GAME_PLAYING
+    GAME_PLAYING,
+    LOAD_GAME
 };
 
 // Difficulty enumeration
@@ -37,6 +36,8 @@ GameState currentState = MAIN_MENU;
 int menuSelection = 0; // Main menu selection
 int difficultySelection = 0; // Difficulty selection
 Difficulty selectedDifficulty = EASY;
+bool saveFileExists = false;
+string saveFileName = "saved.txt";
 
 string bGreen = "\033[1;32m";
 string bRed = "\033[1;31m";
@@ -53,7 +54,7 @@ vector<string> gameRules = {
     "┃  2. Use WASD keys to move on the map                   ┃\n",
     "┃  3. Automatically pick up packages when stepping on    ┃\n",
     "┃     package locations                                  ┃\n",
-    "┃  4. Automatically deliver all packages at hand when    ┃\n",
+    "┃  4. Press D to deliver all packages at hand when       ┃\n",
     "┃     stepping on customer location                      ┃\n",
     "┃  5. Press Q to save game at any time                   ┃\n",
     "┃  6. Deliver all packages to customer within step limit ┃\n",
@@ -64,24 +65,15 @@ vector<string> gameRules = {
     "┃                 remaining OR quit game                 ┃\n"
 };
 
-vector<string> gameProgress = {
-    "┃                     Game Progress                      ┃\n",
-    "┃                                                        ┃\n",
-    "┃  Current Progress: New Game                            ┃\n",
-    "┃  Position: 0,0                                         ┃\n",
-    "┃  Steps remaining: n                                    ┃\n", //n is the total number of steps
-    "┃  Packages Remaining: 2                                 ┃\n", 
-    "┃                                                        ┃\n"
-};
 
 // Function declarations
 void printMainMenu();
 void printInstructions();
 void printDifficultySelect();
-void printGameProgress();
 void startGame();
 void handleMainMenuInput();
 void handleDifficultyInput();
+bool checkSaveFile();
 
 // Utility functions
 string vectorToString(vector<string> arr) {
@@ -92,6 +84,11 @@ string vectorToString(vector<string> arr) {
 
 void clearScreen() {
     cout << "\033[2J\033[1;1H";
+}
+
+bool checkSaveFile() {
+    ifstream file(saveFileName);
+    return file.good();
 }
 
 void printMainMenu() {
@@ -127,11 +124,11 @@ void printMainMenu() {
     
     vector<string> butt3high = {
         "┃               ╭─────────────────────────╮              ┃\n",
-        "┃               │ [3] Game Progress       │              ┃\n",
+        "┃               │ [3]  Continue Game      │              ┃\n",
         "┃               ╰─────────────────────────╯              ┃\n"
     };
     vector<string> butt3 = {
-        "┃               [3] Game Progress                        ┃\n"
+        "┃               [3]  Continue Game                       ┃\n"
     };
     
     string controls = "┃    W/S: Navigate    Enter: Confirm    Q: Back          ┃\n";
@@ -151,11 +148,13 @@ void printMainMenu() {
         for(string line : butt2high) cout << line;
     else 
         for(string line : butt2) cout << line;
-        
-    if(menuSelection == 2) 
-        for(string line : butt3high) cout << line;
-    else 
-        for(string line : butt3) cout << line;
+
+    if(saveFileExists) {
+        if(menuSelection == 2) 
+            for(string line : butt3high) cout << line;
+        else 
+            for(string line : butt3) cout << line;
+    }
     
     cout << empty << empty;
     cout << controls;
@@ -244,19 +243,6 @@ void printDifficultySelect() {
     cout << bottom;
 }
 
-void printGameProgress() {
-    string top =    "┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓\n";
-    string empty =  "┃                                                        ┃\n";
-    string bottom = "┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\n";
-    
-    clearScreen();
-    cout << top;
-    for(string line : gameProgress) cout << line;
-    cout << empty;
-    cout << "┃              Press Q to return to Main Menu            ┃\n";
-    cout << empty;
-    cout << bottom;
-}
 
 void startGame() {
     clearScreen();
@@ -302,6 +288,8 @@ void startGame() {
 void handleMainMenuInput() {
     input = getch();
     
+    int menuItemCount = saveFileExists ? 4 : 3;
+
     if(input == 87 || input == 119) { // W/w
         menuSelection = (menuSelection - 1 + 3) % 3;
     } else if(input == 83 || input == 115) { // S/s
@@ -310,7 +298,15 @@ void handleMainMenuInput() {
         switch(menuSelection) {
             case 0: currentState = INSTRUCTIONS; break;
             case 1: currentState = DIFFICULTY_SELECT; break;
-            case 2: currentState = GAME_PROGRESS; break;
+            case 2: 
+                if(saveFileExists) {
+                    // 这里添加加载存档并开始游戏的逻辑
+                    cout << "Loading saved game..." << endl;
+                    // currentState = GAME_PLAYING; // 取消注释当你有加载功能时
+                    sleep(2); // 暂停2秒显示信息
+                }
+                break;
+
         }
     } else if(input == 113 || input == 81) { // Q/q
         // Already in main menu, no action needed
@@ -337,11 +333,18 @@ void handleDifficultyInput() {
     }
 }
 
+
 int main() {
     SetConsoleOutputCP(CP_UTF8);
     _setmode(_fileno(stdout), CP_UTF8);
     cout << fixed << setprecision(2);
     srand(time(0));
+
+    saveFileExists = checkSaveFile();
+    if(saveFileExists) {
+        cout << "Save file found! 'Continue Game' option enabled." << endl;
+        sleep(2); // 暂停2秒显示信息
+    }
 
     while(true) {
         switch(currentState) {
@@ -363,17 +366,14 @@ int main() {
                 handleDifficultyInput();
                 break;
                 
-            case GAME_PROGRESS:
-                printGameProgress();
-                input = getch();
-                if(input == 113 || input == 81) { // Q/q
-                    currentState = MAIN_MENU;
-                }
-                break;
-                
             case GAME_PLAYING:
                 startGame();
                 break;
+
+            case LOAD_GAME:
+                cout << "Loading game from save file..." << endl;
+                sleep(2);
+                currentState = GAME_PLAYING;
         }
     }
     
