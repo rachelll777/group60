@@ -5,8 +5,7 @@
 #include <iostream>
 #include <vector>
 #include <map>
-
-#include <string.h>
+#include <string>
 #include <vector>
 
 using namespace std;
@@ -16,6 +15,75 @@ struct Player {
     int moveLimit;
     vector<string> inventory;
     pair<int, int> loc;
-};
 
+    // add package to inventory
+    void addPackage(const string& package){
+        inventory.push_back(package);
+        cout << "pick-up package" << packge << endl;
+        displayInv();
+    }
+
+    // deliver packages and empty inventory
+    void deliverAllPackages(){
+        if (!inventory.empty()){
+            cout << "Successfully delivered " << inventory.size() << "package(s) to customer!" << endl;
+            inventory.clear();
+            cout << "Inventory is empty!" << endl;
+        }
+        else{
+            cout << "No package can be delivered!" << endl;}
+    }
+
+    // count packages
+    int getPackageCount() const {
+        return inventory.size();
+    }
+
+    // check if inventory is empty
+    bool hasPackages() const {
+        return !inventory.empty();
+    }
+
+    // display current inventory
+    void displayInv() const{
+        cout << "📦 Inventory: ";
+        if （inventory.empty()){
+            cout << "empty";}
+        else{
+            for (const auto& pkg : inventory) cout << pkg << " ";}
+        cout << endl;
+    }
+
+    // pick up packages when reach packages
+    bool pickupPackageFromMap(vector<vector<string>>& map, int row, int col) {
+        string cellContent = map[row][col];
+        
+        // check if pkg
+        if (cellContent == "1" || cellContent == "2" || cellContent == "3" || 
+            cellContent == "4" || cellContent == "5") {
+            
+            // remove pkg from map
+            map[row][col] = " ";
+            
+            // add to inventory
+            string packageName = "Package" + cellContent;
+            addPackage(packageName);
+            return true;
+        }
+        return false;
+    }
+
+    // deliver to customer
+    bool deliverToCustomer(const vector<vector<string>>& map, int row, int col) {
+        
+        // check customer's location
+        if (map[row][col] == "C") {
+            if (hasPackages()) {
+                deliverAllPackages();
+                return true;
+            }
+        }
+        return false;
+    }
+};
 #endif
