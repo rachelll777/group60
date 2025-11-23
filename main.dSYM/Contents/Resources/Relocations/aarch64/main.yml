@@ -2,8 +2,8 @@
 triple:          'arm64-apple-darwin'
 binary-path:     '/Users/zzzzx/Desktop/COMP2113/group60/main'
 relocations:
-  - { offset: 0x3F, size: 0x8, addend: 0x0, symName: _startGame, symObjAddr: 0xD3098, symBinAddr: 0x100024000, symSize: 0x0 }
-  - { offset: 0x6E, size: 0x8, addend: 0x0, symName: _difficulty, symObjAddr: 0xD30A0, symBinAddr: 0x100024008, symSize: 0x0 }
+  - { offset: 0x3F, size: 0x8, addend: 0x0, symName: _startGame, symObjAddr: 0xD30E8, symBinAddr: 0x100024000, symSize: 0x0 }
+  - { offset: 0x6E, size: 0x8, addend: 0x0, symName: _difficulty, symObjAddr: 0xD30F0, symBinAddr: 0x100024008, symSize: 0x0 }
   - { offset: 0xB8DA, size: 0x8, addend: 0x0, symName: __ZNSt3__1L19piecewise_constructE, symObjAddr: 0x1D9E5, symBinAddr: 0x10001F00D, symSize: 0x0 }
   - { offset: 0xEAC7, size: 0x8, addend: 0x0, symName: __ZNSt3__124__put_character_sequenceB8ne180100IcNS_11char_traitsIcEEEERNS_13basic_ostreamIT_T0_EES7_PKS4_m, symObjAddr: 0x9494, symBinAddr: 0x10000A524, symSize: 0x1EC }
   - { offset: 0x11422, size: 0x8, addend: 0x0, symName: __ZNSt3__18__fill_nB8ne180100ILb1ENS_6vectorIbNS_9allocatorIbEEEEEEvNS_14__bit_iteratorIT0_Lb0EXLi0EEEENS6_9size_typeE, symObjAddr: 0xD558, symBinAddr: 0x10000E5E8, symSize: 0x164 }
@@ -238,18 +238,18 @@ relocations:
   - { offset: 0x1AF2A, size: 0x8, addend: 0x0, symName: __ZNSt3__110__distanceB8ne180100IPNS_12basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEEEENS_15iterator_traitsIT_E15difference_typeES9_S9_NS_26random_access_iterator_tagE, symObjAddr: 0x170B8, symBinAddr: 0x100018148, symSize: 0x28 }
   - { offset: 0x1AF77, size: 0x8, addend: 0x0, symName: __ZNSt3__110__distanceB8ne180100IPNS_6vectorINS_12basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEENS5_IS7_EEEEEENS_15iterator_traitsIT_E15difference_typeESC_SC_NS_26random_access_iterator_tagE, symObjAddr: 0x17138, symBinAddr: 0x1000181C8, symSize: 0x28 }
   - { offset: 0x1C32E, size: 0x8, addend: 0x0, symName: __ZSt28__throw_bad_array_new_lengthB8ne180100v, symObjAddr: 0x4DC0, symBinAddr: 0x100005E50, symSize: 0x34 }
-  - { offset: 0x1C4FA, size: 0x8, addend: 0x0, symName: _choice, symObjAddr: 0xD30B8, symBinAddr: 0x100024020, symSize: 0x0 }
-  - { offset: 0x1C50F, size: 0x8, addend: 0x0, symName: _moveCount, symObjAddr: 0xD30D0, symBinAddr: 0x100024038, symSize: 0x0 }
-  - { offset: 0x1C524, size: 0x8, addend: 0x0, symName: _stepLimits, symObjAddr: 0xD30D4, symBinAddr: 0x10002403C, symSize: 0x0 }
-  - { offset: 0x1C539, size: 0x8, addend: 0x0, symName: _easyBaseMapTemplate, symObjAddr: 0xD30D8, symBinAddr: 0x100024040, symSize: 0x0 }
-  - { offset: 0x1C746, size: 0x8, addend: 0x0, symName: _hardBaseMapTemplate, symObjAddr: 0xD30F0, symBinAddr: 0x100024058, symSize: 0x0 }
-  - { offset: 0x1C75B, size: 0x8, addend: 0x0, symName: _currentMap, symObjAddr: 0xD3108, symBinAddr: 0x100024070, symSize: 0x0 }
-  - { offset: 0x1C770, size: 0x8, addend: 0x0, symName: _playerLoc, symObjAddr: 0xD3120, symBinAddr: 0x100024088, symSize: 0x0 }
-  - { offset: 0x1C79F, size: 0x8, addend: 0x0, symName: _customerLoc, symObjAddr: 0xD3128, symBinAddr: 0x100024090, symSize: 0x0 }
-  - { offset: 0x1C7B4, size: 0x8, addend: 0x0, symName: _numPackages, symObjAddr: 0xD3130, symBinAddr: 0x100024098, symSize: 0x0 }
-  - { offset: 0x1C7C9, size: 0x8, addend: 0x0, symName: _packageLocs, symObjAddr: 0xD3138, symBinAddr: 0x1000240A0, symSize: 0x0 }
-  - { offset: 0x1C966, size: 0x8, addend: 0x0, symName: _allSolutions, symObjAddr: 0xD3150, symBinAddr: 0x1000240B8, symSize: 0x0 }
-  - { offset: 0x1CEDD, size: 0x8, addend: 0x0, symName: _allPaths, symObjAddr: 0xD3168, symBinAddr: 0x1000240D0, symSize: 0x0 }
+  - { offset: 0x1C4FA, size: 0x8, addend: 0x0, symName: _choice, symObjAddr: 0xD3108, symBinAddr: 0x100024020, symSize: 0x0 }
+  - { offset: 0x1C50F, size: 0x8, addend: 0x0, symName: _moveCount, symObjAddr: 0xD3120, symBinAddr: 0x100024038, symSize: 0x0 }
+  - { offset: 0x1C524, size: 0x8, addend: 0x0, symName: _stepLimits, symObjAddr: 0xD3124, symBinAddr: 0x10002403C, symSize: 0x0 }
+  - { offset: 0x1C539, size: 0x8, addend: 0x0, symName: _easyBaseMapTemplate, symObjAddr: 0xD3128, symBinAddr: 0x100024040, symSize: 0x0 }
+  - { offset: 0x1C746, size: 0x8, addend: 0x0, symName: _hardBaseMapTemplate, symObjAddr: 0xD3140, symBinAddr: 0x100024058, symSize: 0x0 }
+  - { offset: 0x1C75B, size: 0x8, addend: 0x0, symName: _currentMap, symObjAddr: 0xD3158, symBinAddr: 0x100024070, symSize: 0x0 }
+  - { offset: 0x1C770, size: 0x8, addend: 0x0, symName: _playerLoc, symObjAddr: 0xD3170, symBinAddr: 0x100024088, symSize: 0x0 }
+  - { offset: 0x1C79F, size: 0x8, addend: 0x0, symName: _customerLoc, symObjAddr: 0xD3178, symBinAddr: 0x100024090, symSize: 0x0 }
+  - { offset: 0x1C7B4, size: 0x8, addend: 0x0, symName: _numPackages, symObjAddr: 0xD3180, symBinAddr: 0x100024098, symSize: 0x0 }
+  - { offset: 0x1C7C9, size: 0x8, addend: 0x0, symName: _packageLocs, symObjAddr: 0xD3188, symBinAddr: 0x1000240A0, symSize: 0x0 }
+  - { offset: 0x1C966, size: 0x8, addend: 0x0, symName: _allSolutions, symObjAddr: 0xD31A0, symBinAddr: 0x1000240B8, symSize: 0x0 }
+  - { offset: 0x1CEDD, size: 0x8, addend: 0x0, symName: _allPaths, symObjAddr: 0xD31B8, symBinAddr: 0x1000240D0, symSize: 0x0 }
   - { offset: 0x1D3FA, size: 0x8, addend: 0x0, symName: __ZNSt3__16vectorINS_4pairIiiEENS_9allocatorIS2_EEE26__swap_out_circular_bufferERNS_14__split_bufferIS2_RS4_EE, symObjAddr: 0x84E0, symBinAddr: 0x100009570, symSize: 0x110 }
   - { offset: 0x1D594, size: 0x8, addend: 0x0, symName: __ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEE26__swap_out_circular_bufferERNS_14__split_bufferIS3_RS4_EE, symObjAddr: 0xAD24, symBinAddr: 0x10000BDB4, symSize: 0x110 }
   - { offset: 0x1D9AA, size: 0x8, addend: 0x0, symName: __ZNSt3__16vectorIiNS_9allocatorIiEEE26__swap_out_circular_bufferERNS_14__split_bufferIiRS2_EE, symObjAddr: 0x139EC, symBinAddr: 0x100014A7C, symSize: 0x110 }

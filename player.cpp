@@ -19,7 +19,7 @@ struct Player {
     // add package to inventory
     void addPackage(const string& package){
         inventory.push_back(package);
-        cout << "pick-up package" << packge << endl;
+        cout << "pick-up package" << package << endl;
         displayInv();
     }
 
@@ -47,7 +47,7 @@ struct Player {
     // display current inventory
     void displayInv() const{
         cout << "📦 Inventory: ";
-        if （inventory.empty()){
+        if (inventory.empty()){
             cout << "empty";}
         else{
             for (const auto& pkg : inventory) cout << pkg << " ";}

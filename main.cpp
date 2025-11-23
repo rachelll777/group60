@@ -15,6 +15,7 @@
 #include <queue>
 #include <stack>
 
+#include "player.h"
 
 // 跨平台键盘输入处理
 #ifdef _WIN32
@@ -261,6 +262,9 @@ int main() {
     srand(time(0));
 
     if(startGame) {
+
+        Player *p = new Player();
+
         cout << "Start game!" << endl;
         
         currentMap = (difficulty=="easy")?easyBaseMapTemplate:hardBaseMapTemplate;
@@ -289,8 +293,15 @@ int main() {
                 else dir = {0, 0};
 
                 if(checkValidMovement(dir)) {
-                    playerLoc = {playerLoc.first+dir.first, playerLoc.second+dir.second};
-                    moveCount = moveCount+1;
+                    pair<int, int> stationary = {0, 0};
+                    if(dir == stationary) {
+                        /*
+                        Player interaction
+                        */
+                    } else {
+                        playerLoc = {playerLoc.first+dir.first, playerLoc.second+dir.second};
+                        moveCount = moveCount+1;
+                    }
                 } else cout << "Not a valid move." << endl;
 
             } else cout << "Not a valid key." << endl;
