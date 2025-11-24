@@ -359,7 +359,7 @@ int main() {
             for(int i = 0; i < p->inventory.size();i++) cout << "| Package " << (i+1) << " | ";
             cout << "}" << endl;
             if(deliveringPackage) {
-                cout << "Successfully delivered " << numDeliveredPackages << "package(s) to customer!" << endl;
+                cout << "Successfully delivered " << numDeliveredPackages << " package(s) to customer!" << endl;
                 numDeliveredPackages = -1;
                 deliveringPackage = false;
             }
@@ -399,12 +399,10 @@ int main() {
                 break;
             }
             // cout << move << endl;
-            
-            
         }
-        if(winGame) {
-            cout << "Yay you win!" << endl;
-        }
+        if(winGame) cout << "Yay you win!" << endl;
+
+        delete p;
     }
 
     return 0;
