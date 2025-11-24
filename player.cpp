@@ -35,17 +35,17 @@ struct Player {
     }
 
     // count packages
-    int getPackageCount() const {
+    int getPackageCount() {
         return inventory.size();
     }
 
     // check if inventory is empty
-    bool hasPackages() const {
+    bool hasPackages(){
         return !inventory.empty();
     }
 
     // display current inventory
-    void displayInv() const{
+    void displayInv(){
         cout << "📦 Inventory: ";
         if (inventory.empty()){
             cout << "empty";}
@@ -74,16 +74,12 @@ struct Player {
     }
 
     // deliver to customer
-    bool deliverToCustomer(const vector<vector<string>>& map, int row, int col) {
+    void deliverToCustomer(vector<vector<string>>& map, pair<int, int> loc) {
         
         // check customer's location
-        if (map[row][col] == "C") {
-            if (hasPackages()) {
-                deliverAllPackages();
-                return true;
-            }
+        if (map[loc.first][loc.second] == "C") {
+            if (hasPackages()) deliverAllPackages();
         }
-        return false;
     }
 };
 #endif

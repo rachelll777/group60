@@ -42,6 +42,8 @@ using namespace std;
 bool startGame = false;
 string difficulty = "";
 
+bool winGame = false;
+
 string choice;
 
 int moveCount;
@@ -85,19 +87,23 @@ vector<vector<string>> hardBaseMapTemplate = {
 
 vector<vector<string>> currentMap;
 
-pair<int, int> playerLoc = {};
 pair<int, int> customerLoc = {};
 int numPackages;
 vector<pair<int, int>> packageLocs = {};
+bool deliveringPackage = false;
+int numDeliveredPackages = -1;
+
 map<vector<int>, int> allSolutions = {};
 
+
+
 // 在地图上随机放置元素
-void placeItemsRandomly() {
+void placeItemsRandomly(Player *&p) {
     pair<int, int> loc = {rand()%currentMap.size(), rand()%currentMap[0].size()};
     vector<pair<int, int>> usedLocs = {};
     // player location
     while(currentMap[loc.first][loc.second] != " " || find(usedLocs.begin(), usedLocs.end(), loc) != usedLocs.end()) loc = {rand()%currentMap.size(), rand()%currentMap[0].size()};
-    playerLoc = loc;
+    p->loc = loc;
     usedLocs.push_back(loc);
     
     
@@ -127,21 +133,21 @@ void placeItemsRandomly() {
 // }
 
 // 显示地图和物品信息
-void displayMapInfo() {
+void displayMapInfo(Player *&p) {
     cout << "\033[2J\033[1;1H";
     cout << "Press W, A, S, D to move, or press Q to quit." << endl;
     for(int i = 0; i < currentMap.size(); i++) {
         for(int j = 0; j < currentMap[i].size(); j++) {
             pair<int, int> loc = {i, j};
             bool isPackage = false;
-            int packageNum = -1;
+            int packageNum = 0;
             for(int i = 0; i < packageLocs.size(); i++) {
                 if(packageLocs[i] == loc) {
                     isPackage = true;
-                    packageNum = i;
+                    break;
                 }
             }
-            if(loc == playerLoc) cout << "P ";
+            if(loc == p->loc) cout << "P ";
             else if(loc == customerLoc) cout << "C ";
             else if(isPackage) cout << (packageNum+1) << " ";
             else cout << currentMap[i][j] << " ";
@@ -183,15 +189,8 @@ bool checkValidKey(string choice) {
     return choice == "W" || choice =="w" || choice =="A" || choice =="a" || choice == "S" || choice =="s" || choice =="D" || choice =="d" || choice ==" ";
 }
 
-bool checkValidMovement(pair<int ,int> dir) {
-    pair<int, int> newLoc = {playerLoc.first+dir.first, playerLoc.second+dir.second};
-    if(dir.first == 0 && dir.second == 0) {
-        /*
-         * Do interaction
-         */
-        return true;
-    } else if(currentMap[newLoc.first][newLoc.second] == "#") return false;
-    else return true;
+bool checkValidMovement(Player *&p, pair<int ,int> dir) {
+    return currentMap[p->loc.first+dir.first][p->loc.second+dir.second] != "#";
 }
 
 vector<vector<int>> allPaths = {};
@@ -239,7 +238,7 @@ int pathFinding(pair<int, int> loc1, pair<int, int> loc2) {
 
 // 0, 1, C
 // 0, 1, 2, 3, 4, C
-int shortestDelivery() {
+int shortestDelivery(Player *&p) {
     vector<bool> visited(numPackages+1, false);
     vector<vector<string>> path = {};
     vector<int> defaultPath = {};
@@ -247,7 +246,7 @@ int shortestDelivery() {
     permute(defaultPath, 0, numPackages-1);
     int distance = 99999;
     for(vector<int> path : allPaths) {
-        int currDist = pathFinding(playerLoc, packageLocs[path[0]]);
+        int currDist = pathFinding(p->loc, packageLocs[path[0]]);
         for(int i = 0; i < path.size()-1; i++) currDist = currDist+pathFinding(packageLocs[path[i]], packageLocs[path[i+1]]);
         currDist = currDist+pathFinding(packageLocs[path[numPackages-1]], customerLoc);
         if(currDist < distance) distance = currDist;
@@ -256,31 +255,116 @@ int shortestDelivery() {
     return distance;
 }
 
+
+// Player functions, all of them, write it here.
+// display current inventory
+void displayInv(Player *&p) {
+    cout << "📦 Inventory: ";
+    if (p->inventory.empty()){
+
+        cout << "empty";}
+    else{
+        for (const auto& pkg : p->inventory) cout << pkg << " ";}
+    cout << endl;
+}
+
+// add package to inventory
+void addPackage(Player *&p, string package) {
+    p->inventory.push_back(package);
+    cout << "Player picked up Package number " << package << endl;
+    
+    packageLocs.erase(packageLocs.begin()+stoi(package)-1);
+    for(pair<int, int> i : packageLocs) {
+        cout << i.first << " " << i.second << endl;
+    }
+    displayInv(p);
+}
+
+ // count packages
+int getPackageCount(Player *&p) {
+    return p->inventory.size();
+}
+
+// check if inventory is empty
+bool hasPackages(Player *&p){
+    return !p->inventory.empty();
+}
+
+// deliver to customer
+void deliverToCustomer(Player *&p, vector<vector<string>>& map, pair<int, int> loc) {
+    // 1. check if player location is same as customer
+    // Ambiguous. no need to check if player inventory is empty or not
+    // 2. Remove package from player's inventory
+    // check customer's location
+    if (p->loc == customerLoc) {
+        if (p->inventory.size() != 0) {
+            deliveringPackage = true;
+            numDeliveredPackages = p->inventory.size();
+            p->inventory.clear();
+        }
+    }
+}
+
+// pick up packages when reach packages
+void pickupPackageFromMap(Player *&p) {
+    // 1: check which package player is standing
+    bool isOnPackage = false;
+    int packNum = -1;
+    for(int i = 0; i < packageLocs.size(); i++) {
+        pair<int, int> packLoc = packageLocs[i];
+        if(packLoc == p->loc) {
+            isOnPackage = true;
+            packNum = i+1;
+            p->inventory.push_back(to_string(packNum));
+            packageLocs.erase(packageLocs.begin()+i);
+            break;
+        }
+    }
+    // 2: remove that package from the list of packages -> it wont be printed out again
+    
+}
+
+
 int main() {
     showMainMenu();
     
     srand(time(0));
 
     if(startGame) {
-
-        Player *p = new Player();
-
         cout << "Start game!" << endl;
         
         currentMap = (difficulty=="easy")?easyBaseMapTemplate:hardBaseMapTemplate;
-        numPackages = (difficulty=="easy")?2:5;
-        placeItemsRandomly();
+        numPackages = (difficulty=="easy")?2:7;
+        
+        Player *p = new Player();
+        p->inventory = {};
+        p->moveCount = 0;
+
+        placeItemsRandomly(p);
         
         int moveCount = 0;
-        int minSteps = shortestDelivery();
-        stepLimits = (difficulty=="easy")?minSteps*2:minSteps;
+        int minSteps = shortestDelivery(p);
+        stepLimits = (difficulty=="easy")?minSteps*2:minSteps+2;
+
+        
+        p->moveLimit = stepLimits;
 
         choice = "";
 
         while(choice != "q" && choice != "Q") {
-            displayMapInfo();
+            displayMapInfo(p);
             cout << "Move count " << moveCount << endl;
             cout << "Move limit " << stepLimits << endl;
+            cout << "Player inventory: { ";
+            for(int i = 0; i < p->inventory.size();i++) cout << "| Package " << (i+1) << " | ";
+            cout << "}" << endl;
+            if(deliveringPackage) {
+                cout << "Successfully delivered " << numDeliveredPackages << "package(s) to customer!" << endl;
+                numDeliveredPackages = -1;
+                deliveringPackage = false;
+            }
+            cout << endl << endl;
+
             cin >> choice;
 
             if(choice == "Q" || choice == "q") break;
@@ -290,18 +374,22 @@ int main() {
                 else if(choice == "A" || choice == "a") dir = {0, -1};
                 else if(choice == "S" || choice == "s") dir = {1, 0};
                 else if(choice == "D" || choice == "d") dir = {0, 1};
-                else dir = {0, 0};
 
-                if(checkValidMovement(dir)) {
-                    pair<int, int> stationary = {0, 0};
-                    if(dir == stationary) {
-                        /*
-                        Player interaction
-                        */
-                    } else {
-                        playerLoc = {playerLoc.first+dir.first, playerLoc.second+dir.second};
-                        moveCount = moveCount+1;
+                if(checkValidMovement(p, dir)) {
+                    //standard moving
+                    p->loc = {p->loc.first+dir.first, p->loc.second+dir.second};
+                    moveCount = moveCount+1;
+                    //picking up item
+                    pickupPackageFromMap(p);
+                    
+                    //passing item
+                    deliverToCustomer(p,currentMap, p->loc);
+
+                    if(packageLocs.empty() && p->inventory.empty()) {
+                        winGame = true;
+                        break;
                     }
+                    
                 } else cout << "Not a valid move." << endl;
 
             } else cout << "Not a valid key." << endl;
@@ -314,7 +402,9 @@ int main() {
             
             
         }
-
+        if(winGame) {
+            cout << "Yay you win!" << endl;
+        }
     }
 
     return 0;
