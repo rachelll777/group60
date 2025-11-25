@@ -6,8 +6,8 @@
 #include <string>
 #include <fstream>
 #include <iomanip>
-#include <iostream>
-#include <stdlib.h>
+#include <cstdlib>
+#include <ctime>
 
 #include <unistd.h>
 
@@ -16,12 +16,15 @@
 #include <stack>
 
 #include "player.h"
+#include "intro.h"
+#include "end1.h"
+#include "saveprogress.h"
 
 // 跨平台键盘输入处理
 #ifdef _WIN32
     #include <conio.h>  // Windows 使用 conio.h
 #else
-    // macOS/Linux 使用 termios 实现 21getch()
+    // macOS/Linux 使用 termios 实现 getch()
     #include <termios.h>
     #include <stdio.h>
     int getch() {
@@ -39,13 +42,7 @@
 
 using namespace std;
 
-bool startGame = false;
-string difficulty = "";
-
 bool winGame = false;
-
-string choice;
-
 int moveCount;
 int stepLimits;
 
@@ -84,113 +81,73 @@ vector<vector<string>> hardBaseMapTemplate = {
         {"#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#"}
     };
 
-
 vector<vector<string>> currentMap;
-
 pair<int, int> customerLoc = {};
 int numPackages;
 vector<pair<int, int>> packageLocs = {};
 bool deliveringPackage = false;
 int numDeliveredPackages = -1;
-
 map<vector<int>, int> allSolutions = {};
-
-
 
 // 在地图上随机放置元素
 void placeItemsRandomly(Player *&p) {
     pair<int, int> loc = {rand()%currentMap.size(), rand()%currentMap[0].size()};
     vector<pair<int, int>> usedLocs = {};
     // player location
-    while(currentMap[loc.first][loc.second] != " " || find(usedLocs.begin(), usedLocs.end(), loc) != usedLocs.end()) loc = {rand()%currentMap.size(), rand()%currentMap[0].size()};
+    while(currentMap[loc.first][loc.second] != " " || find(usedLocs.begin(), usedLocs.end(), loc) != usedLocs.end()) 
+        loc = {rand()%currentMap.size(), rand()%currentMap[0].size()};
     p->loc = loc;
     usedLocs.push_back(loc);
     
-    
     // customer location
-    while(currentMap[loc.first][loc.second] != " " || find(usedLocs.begin(), usedLocs.end(), loc) != usedLocs.end()) loc = {rand()%currentMap.size(), rand()%currentMap[0].size()};
+    while(currentMap[loc.first][loc.second] != " " || find(usedLocs.begin(), usedLocs.end(), loc) != usedLocs.end()) 
+        loc = {rand()%currentMap.size(), rand()%currentMap[0].size()};
     customerLoc = loc;
     usedLocs.push_back(loc);
 
     for(int i = 0; i < numPackages; i++) {
-        while(currentMap[loc.first][loc.second] != " " || find(usedLocs.begin(), usedLocs.end(), loc) != usedLocs.end()) loc = {rand()%currentMap.size(), rand()%currentMap[0].size()};
+        while(currentMap[loc.first][loc.second] != " " || find(usedLocs.begin(), usedLocs.end(), loc) != usedLocs.end()) 
+            loc = {rand()%currentMap.size(), rand()%currentMap[0].size()};
         packageLocs.push_back(loc);
         usedLocs.push_back(loc);
     }
 }
 
-// Not used! 生成指定模式的地图
-// vector<vector<string>> generateMap(string mode) {
-//     vector<vector<string>> currentMap;
-//     if (mode == "easy") {
-//         currentMap = easyBaseMapTemplate;
-//         placeItemsRandomly(currentMap, 2, 1); // 2个物品，1个顾客
-//     } else if (mode == "hard") {
-//         currentMap = hardBaseMapTemplate;
-//         placeItemsRandomly(currentMap, 5, 1); // 5个物品，1个顾客
-//     }
-//     return currentMap;
-// }
-
 // 显示地图和物品信息
 void displayMapInfo(Player *&p) {
     cout << "\033[2J\033[1;1H";
-    cout << "Press W, A, S, D to move, or press Q to quit." << endl;
+    cout << "Controls: W/A/S/D to move, S to save, Q to quit" << endl;
     for(int i = 0; i < currentMap.size(); i++) {
         for(int j = 0; j < currentMap[i].size(); j++) {
             pair<int, int> loc = {i, j};
             bool isPackage = false;
-            int packageNum = 0;
-            for(int i = 0; i < packageLocs.size(); i++) {
-                if(packageLocs[i] == loc) {
+            for(size_t k = 0; k < packageLocs.size(); k++) {
+                if(packageLocs[k] == loc) {
                     isPackage = true;
                     break;
                 }
             }
             if(loc == p->loc) cout << "P ";
             else if(loc == customerLoc) cout << "C ";
-            else if(isPackage) cout << (packageNum+1) << " ";
+            else if(isPackage) cout << "📦 ";
             else cout << currentMap[i][j] << " ";
         }
         cout << endl;
     }
 }
 
-// 主菜单
-void showMainMenu() {
-    cout << "=== MAZE EXPLORATION GAME ===" << endl;
-    cout << "1. Easy Mode (10x10 currentMap)" << endl;
-    cout << "   - 2 Items to collect" << endl;
-    cout << "   - 1 Customer to find" << endl;
-    cout << "2. Hard Mode (17x17 currentMap)" << endl;
-    cout << "   - 5 Items to collect" << endl;
-    cout << "   - 1 Customer to find" << endl;
-    cout << "3. Exit Game" << endl;
-    cout << "=============================" << endl;
-    cout << "Please select an option (1-3): ";
-    cin >> choice;
-
-    if(choice == "1") {
-        difficulty = "easy";
-        startGame = true;
-    } else if(choice == "2") {
-        difficulty = "hard";
-        startGame = true;
-    } else if(choice == "3") {
-        cout << "Thank you for playing! Goodbye!" << endl;
-        startGame = false;
-    } else {
-        showMainMenu();
-        cout << "Invalid choice! Please select 1, 2, or 3." << endl;
-    }
-}
-
 bool checkValidKey(string choice) {
-    return choice == "W" || choice =="w" || choice =="A" || choice =="a" || choice == "S" || choice =="s" || choice =="D" || choice =="d" || choice ==" ";
+    return choice == "W" || choice =="w" || choice =="A" || choice =="a" || 
+           choice == "S" || choice =="s" || choice =="D" || choice =="d" || 
+           choice == "Q" || choice == "q" || choice == " ";
 }
 
 bool checkValidMovement(Player *&p, pair<int ,int> dir) {
-    return currentMap[p->loc.first+dir.first][p->loc.second+dir.second] != "#";
+    int newX = p->loc.first + dir.first;
+    int newY = p->loc.second + dir.second;
+    return (newX >= 0 && newX < currentMap.size() && 
+            newY >= 0 && newY < currentMap[0].size() && 
+            currentMap[newX][newY] != "#");
 }
 
 vector<vector<int>> allPaths = {};
@@ -208,10 +165,7 @@ void permute(vector<int> path, int start, int end) {
     }
 }
 
-
 // Compute shortest path between 2 locations
-// Input: pair<int, int> loc1, pair<int, int> loc2 
-// Implementation: bfs
 int pathFinding(pair<int, int> loc1, pair<int, int> loc2) {
     vector<vector<bool>> visited(currentMap.size(), vector<bool>(currentMap[0].size(), false));
     visited[loc1.first][loc1.second] = true;
@@ -227,7 +181,9 @@ int pathFinding(pair<int, int> loc1, pair<int, int> loc2) {
         if(x == loc2.first && y == loc2.second) return distance;
         for(vector<int> dir : directions) {
             int nextX = x+dir[0], nextY = y+dir[1];
-            if(currentMap[nextX][nextY] != "#" && !visited[nextX][nextY]) {
+            if(nextX >= 0 && nextX < currentMap.size() && 
+               nextY >= 0 && nextY < currentMap[0].size() &&
+               currentMap[nextX][nextY] != "#" && !visited[nextX][nextY]) {
                 visited[nextX][nextY] = true;
                 q.push({nextX, nextY, distance+1});
             }
@@ -236,66 +192,39 @@ int pathFinding(pair<int, int> loc1, pair<int, int> loc2) {
     return -1;
 }
 
-// 0, 1, C
-// 0, 1, 2, 3, 4, C
+// 计算最短配送路径
 int shortestDelivery(Player *&p) {
     vector<bool> visited(numPackages+1, false);
-    vector<vector<string>> path = {};
     vector<int> defaultPath = {};
     for(int i = 0; i < numPackages; i++) defaultPath.push_back(i);
+    
+    allPaths.clear();
     permute(defaultPath, 0, numPackages-1);
+    
     int distance = 99999;
     for(vector<int> path : allPaths) {
         int currDist = pathFinding(p->loc, packageLocs[path[0]]);
-        for(int i = 0; i < path.size()-1; i++) currDist = currDist+pathFinding(packageLocs[path[i]], packageLocs[path[i+1]]);
-        currDist = currDist+pathFinding(packageLocs[path[numPackages-1]], customerLoc);
+        for(int i = 0; i < path.size()-1; i++) 
+            currDist += pathFinding(packageLocs[path[i]], packageLocs[path[i+1]]);
+        currDist += pathFinding(packageLocs[path[numPackages-1]], customerLoc);
         if(currDist < distance) distance = currDist;
-        allSolutions[path] = currDist;
     }
     return distance;
 }
 
-
-// Player functions, all of them, write it here.
-// display current inventory
+// Player functions
 void displayInv(Player *&p) {
     cout << "📦 Inventory: ";
     if (p->inventory.empty()){
-
-        cout << "empty";}
-    else{
-        for (const auto& pkg : p->inventory) cout << pkg << " ";}
-    cout << endl;
-}
-
-// add package to inventory
-void addPackage(Player *&p, string package) {
-    p->inventory.push_back(package);
-    cout << "Player picked up Package number " << package << endl;
-    
-    packageLocs.erase(packageLocs.begin()+stoi(package)-1);
-    for(pair<int, int> i : packageLocs) {
-        cout << i.first << " " << i.second << endl;
+        cout << "empty";
+    } else {
+        for (const auto& pkg : p->inventory) cout << pkg << " ";
     }
-    displayInv(p);
-}
-
- // count packages
-int getPackageCount(Player *&p) {
-    return p->inventory.size();
-}
-
-// check if inventory is empty
-bool hasPackages(Player *&p){
-    return !p->inventory.empty();
+    cout << endl;
 }
 
 // deliver to customer
 void deliverToCustomer(Player *&p, vector<vector<string>>& map, pair<int, int> loc) {
-    // 1. check if player location is same as customer
-    // Ambiguous. no need to check if player inventory is empty or not
-    // 2. Remove package from player's inventory
-    // check customer's location
     if (p->loc == customerLoc) {
         if (p->inventory.size() != 0) {
             deliveringPackage = true;
@@ -307,67 +236,93 @@ void deliverToCustomer(Player *&p, vector<vector<string>>& map, pair<int, int> l
 
 // pick up packages when reach packages
 void pickupPackageFromMap(Player *&p) {
-    // 1: check which package player is standing
-    bool isOnPackage = false;
-    int packNum = -1;
-    for(int i = 0; i < packageLocs.size(); i++) {
+    for(size_t i = 0; i < packageLocs.size(); i++) {
         pair<int, int> packLoc = packageLocs[i];
         if(packLoc == p->loc) {
-            isOnPackage = true;
-            packNum = i+1;
-            p->inventory.push_back(to_string(packNum));
+            p->inventory.push_back(to_string(i+1));
             packageLocs.erase(packageLocs.begin()+i);
+            cout << "Picked up package " << (i+1) << "!" << endl;
             break;
         }
     }
-    // 2: remove that package from the list of packages -> it wont be printed out again
-    
 }
 
-
 int main() {
-    showMainMenu();
+    // 使用intro界面
+    int gameStartType = runIntroLoop();
     
     srand(time(0));
 
-    if(startGame) {
-        cout << "Start game!" << endl;
+    if(gameStartType == 1 || gameStartType == 2) { // 新游戏或加载游戏
+        cout << "Starting game..." << endl;
+        sleep(1);
         
-        currentMap = (difficulty=="easy")?easyBaseMapTemplate:hardBaseMapTemplate;
-        numPackages = (difficulty=="easy")?2:7;
+        // 使用intro中选择的难度
+        string difficulty = (selectedDifficulty == EASY) ? "easy" : "hard";
+        
+        currentMap = (difficulty=="easy") ? easyBaseMapTemplate : hardBaseMapTemplate;
+        numPackages = (difficulty=="easy") ? 2 : 5;
         
         Player *p = new Player();
         p->inventory = {};
         p->moveCount = 0;
 
-        placeItemsRandomly(p);
-        
-        int moveCount = 0;
-        int minSteps = shortestDelivery(p);
-        stepLimits = (difficulty=="easy")?minSteps*2:minSteps+2;
+        // 如果是加载游戏，从存档读取
+        if(gameStartType == 2) {
+            cout << "Loading saved game..." << endl;
+            if(!loadGameProgress(p, packageLocs, customerLoc, moveCount, stepLimits, numPackages, difficulty)) {
+                cout << "Failed to load game. Starting new game." << endl;
+                placeItemsRandomly(p);
+                int minSteps = shortestDelivery(p);
+                stepLimits = (difficulty=="easy") ? minSteps*2 : minSteps+2;
+            } else {
+                cout << "Game loaded successfully!" << endl;
+            }
+        } else {
+            // 新游戏
+            cout << "Starting new game..." << endl;
+            placeItemsRandomly(p);
+            int minSteps = shortestDelivery(p);
+            stepLimits = (difficulty=="easy") ? minSteps*2 : minSteps+2;
+        }
 
-        
         p->moveLimit = stepLimits;
-
-        choice = "";
+        string choice = "";
 
         while(choice != "q" && choice != "Q") {
             displayMapInfo(p);
-            cout << "Move count " << moveCount << endl;
-            cout << "Move limit " << stepLimits << endl;
+            cout << "==========================================" << endl;
+            cout << "Move count: " << moveCount << " / " << stepLimits << endl;
+            cout << "Packages remaining: " << packageLocs.size() << " / " << numPackages << endl;
             cout << "Player inventory: { ";
-            for(int i = 0; i < p->inventory.size();i++) cout << "| Package " << (i+1) << " | ";
+            for(size_t i = 0; i < p->inventory.size(); i++) 
+                cout << "| Package " << p->inventory[i] << " | ";
             cout << "}" << endl;
+            
             if(deliveringPackage) {
-                cout << "Successfully delivered " << numDeliveredPackages << " package(s) to customer!" << endl;
+                cout << "🎉 Successfully delivered " << numDeliveredPackages << " package(s) to customer!" << endl;
                 numDeliveredPackages = -1;
                 deliveringPackage = false;
             }
-            cout << endl << endl;
+            
+            cout << "==========================================" << endl;
+            cout << "Enter move (W/A/S/D), S to save, Q to quit: ";
 
             cin >> choice;
 
             if(choice == "Q" || choice == "q") break;
+            
+            // 存档功能
+            if(choice == "S" || choice == "s") {
+                if(saveGameProgress(p, packageLocs, customerLoc, moveCount, stepLimits, numPackages, difficulty)) {
+                    cout << "💾 Game saved successfully!" << endl;
+                } else {
+                    cout << "❌ Failed to save game!" << endl;
+                }
+                sleep(1);
+                continue;
+            }
+            
             if(checkValidKey(choice)) {
                 pair<int, int> dir = {};
                 if(choice == "W" || choice == "w") dir = {-1, 0};
@@ -376,34 +331,46 @@ int main() {
                 else if(choice == "D" || choice == "d") dir = {0, 1};
 
                 if(checkValidMovement(p, dir)) {
-                    //standard moving
                     p->loc = {p->loc.first+dir.first, p->loc.second+dir.second};
                     moveCount = moveCount+1;
-                    //picking up item
                     pickupPackageFromMap(p);
-                    
-                    //passing item
-                    deliverToCustomer(p,currentMap, p->loc);
+                    deliverToCustomer(p, currentMap, p->loc);
 
+                    // 检查胜利条件
                     if(packageLocs.empty() && p->inventory.empty()) {
                         winGame = true;
                         break;
                     }
                     
-                } else cout << "Not a valid move." << endl;
+                } else {
+                    cout << "❌ Not a valid move. You hit a wall!" << endl;
+                    sleep(1);
+                }
 
-            } else cout << "Not a valid key." << endl;
+            } else {
+                cout << "❌ Not a valid key. Use W/A/S/D to move." << endl;
+                sleep(1);
+            }
             
+            // 检查失败条件
             if(moveCount > stepLimits) {
-                cout << "Oh no you lost!" << endl;
+                cout << "⏰ You ran out of moves!" << endl;
+                sleep(1);
                 break;
             }
-            // cout << move << endl;
         }
-        if(winGame) cout << "Yay you win!" << endl;
+        
+        // 显示结束界面
+        int packagesDelivered = numPackages - packageLocs.size();
+        showEndScreen(winGame, moveCount, stepLimits, packagesDelivered, numPackages);
 
         delete p;
+        
+        // 返回主菜单
+        cout << "Returning to main menu..." << endl;
+        sleep(2);
     }
 
+    cout << "Thank you for playing!" << endl;
     return 0;
 }
