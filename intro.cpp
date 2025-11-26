@@ -38,11 +38,11 @@ vector<string> gameRules = {
     "┃  1. Choose difficulty: Rookie(small map, 2 packages)   ┃\n",
     "┃     or Expert(large map, 5 packages)                   ┃\n",
     "┃  2. Use WASD keys to move on the map (press ENTER)     ┃\n",
-    "┃  3. Automatically pick up packages when stepping on    ┃\n",
-    "┃     package locations                                  ┃\n",
+    "┃  3. Automatically pick up packages (1) when stepping   ┃\n",
+    "┃     on package locations                               ┃\n",
     "┃  4. Automatically deliver all packages at hand when    ┃\n",
-    "┃     stepping on customer location                      ┃\n",
-    "┃  5. Press S to save game at any time                   ┃\n",
+    "┃     stepping on customer location (C)                  ┃\n",
+    "┃  5. Press V to save game at any time                   ┃\n",
     "┃  6. Press Q to quit game                               ┃\n",
     "┃  7. Deliver all packages to customer within step limit ┃\n",
     "┃                                                        ┃\n",
@@ -113,21 +113,21 @@ void printMainMenu() {
     };
     
     vector<string> butt2high = {
-        "┃               ╭─────────────────────────╮              ┃\n",
-        "┃               │ [2] Difficulty Level    │              ┃\n",
-        "┃               ╰─────────────────────────╯              ┃\n"
+    "┃               ╭─────────────────────────╮              ┃\n",
+    "┃               │ [2]  New Game           │              ┃\n",  // 改为Continue Game
+    "┃               ╰─────────────────────────╯              ┃\n"
     };
     vector<string> butt2 = {
-        "┃               [2] Difficulty Level                     ┃\n"
+    "┃               [2]  New Game                            ┃\n"  // 改为Continue Game
     };
-    
+
     vector<string> butt3high = {
-        "┃               ╭─────────────────────────╮              ┃\n",
-        "┃               │ [3]  Continue Game      │              ┃\n",
-        "┃               ╰─────────────────────────╯              ┃\n"
+    "┃               ╭─────────────────────────╮              ┃\n",
+    "┃               │ [3]  Continue Game      │              ┃\n",  // 改为New Game
+    "┃               ╰─────────────────────────╯              ┃\n"
     };
     vector<string> butt3 = {
-        "┃               [3]  Continue Game                       ┃\n"
+    "┃               [3]  Continue Game                       ┃\n"  // 改为New Game
     };
     
     string controls = "┃    W/S: Navigate    Enter: Confirm    Q: Back          ┃\n";
@@ -265,8 +265,9 @@ void startGame() {
     
     cout << empty;
     cout << "┃               Use WASD to move                         ┃\n";
-    cout << "┃               Press S to save game                     ┃\n";
+    cout << "┃               Press V to save game                     ┃\n";
     cout << "┃               Press ESC to return to menu              ┃\n";
+    cout << "┃               Press ENTER to start game                ┃\n";
     cout << empty;
     cout << "┃                      Good Luck!                        ┃\n";
     cout << empty;
@@ -274,11 +275,11 @@ void startGame() {
     
     while(true) {
         input = getch();
-        if(input == 27) { // ESC key
+        if(input == 27) { // ESC key - 返回主菜单
             currentState = MAIN_MENU;
             break;
-        } else if(input == 113 || input == 81) { // Q key
-            cout << "┃                     Progress Saved                     ┃\n";
+        } else if(input == 13) { // ENTER key 
+            break;  // 跳出循环，让runIntroLoop返回1
         }
     }
 }
@@ -300,16 +301,16 @@ void handleMainMenuInput() {
                 break;
             case 1: 
                 if(saveFileExists) {
-                    // 有存档时：选项1是继续游戏
-                    currentState = LOAD_GAME;
+                    // ✅ 修正：选项1是 New Game（选择难度开始新游戏）
+                    currentState = DIFFICULTY_SELECT;
                 } else {
-                    // 无存档时：选项1是选择难度
+                    // 无存档时：选项1是选择难度（新游戏）
                     currentState = DIFFICULTY_SELECT;
                 }
                 break;
             case 2:
-                // 有存档时：选项2是选择难度（新游戏）
-                currentState = DIFFICULTY_SELECT;
+                // ✅ 修正：选项2是 Continue Game（加载存档）
+                currentState = LOAD_GAME;
                 break;
         }
     } else if(input == 113 || input == 81) { // Q/q
@@ -380,7 +381,11 @@ int runIntroLoop() {
                 
             case GAME_PLAYING:
                 startGame();
-                return 1;  // 返回1表示开始新游戏
+                if (currentState == MAIN_MENU) {
+                    break;
+                } else {
+                    return 1;
+                }
                 break;
 
             case LOAD_GAME:

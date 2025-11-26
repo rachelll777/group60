@@ -8,6 +8,7 @@
 #include <iomanip>
 #include <cstdlib>
 #include <ctime>
+#include <cstdio>
 
 #include <unistd.h>
 
@@ -43,8 +44,9 @@
 using namespace std;
 
 bool winGame = false;
-int moveCount;
-int stepLimits;
+int moveCount =0;
+int stepLimits =0;
+extern Difficulty selectedDifficulty;
 
 // Easy模式 10x10
 vector<vector<string>> easyBaseMapTemplate = {
@@ -116,7 +118,7 @@ void placeItemsRandomly(Player *&p) {
 // 显示地图和物品信息
 void displayMapInfo(Player *&p) {
     cout << "\033[2J\033[1;1H";
-    cout << "Controls: W/A/S/D to move, S to save, Q to quit" << endl;
+    cout << "Controls: W/A/S/D to move, V to save, Q to quit" << endl;
     for(int i = 0; i < currentMap.size(); i++) {
         for(int j = 0; j < currentMap[i].size(); j++) {
             pair<int, int> loc = {i, j};
@@ -129,7 +131,7 @@ void displayMapInfo(Player *&p) {
             }
             if(loc == p->loc) cout << "P ";
             else if(loc == customerLoc) cout << "C ";
-            else if(isPackage) cout << "📦 ";
+            else if(isPackage) cout << "1 ";
             else cout << currentMap[i][j] << " ";
         }
         cout << endl;
@@ -139,7 +141,8 @@ void displayMapInfo(Player *&p) {
 bool checkValidKey(string choice) {
     return choice == "W" || choice =="w" || choice =="A" || choice =="a" || 
            choice == "S" || choice =="s" || choice =="D" || choice =="d" || 
-           choice == "Q" || choice == "q" || choice == " ";
+           choice == "Q" || choice == "q" || choice == "V" || choice == "v" ||
+           choice == " ";
 }
 
 bool checkValidMovement(Player *&p, pair<int ,int> dir) {
@@ -214,7 +217,7 @@ int shortestDelivery(Player *&p) {
 
 // Player functions
 void displayInv(Player *&p) {
-    cout << "📦 Inventory: ";
+    cout << "Packages Inventory: ";
     if (p->inventory.empty()){
         cout << "empty";
     } else {
@@ -306,14 +309,14 @@ int main() {
             }
             
             cout << "==========================================" << endl;
-            cout << "Enter move (W/A/S/D), S to save, Q to quit: ";
+            cout << "Enter move (W/A/S/D), V to save, Q to quit: ";
 
             cin >> choice;
 
             if(choice == "Q" || choice == "q") break;
             
             // 存档功能
-            if(choice == "S" || choice == "s") {
+            if(choice == "V" || choice == "v") {
                 if(saveGameProgress(p, packageLocs, customerLoc, moveCount, stepLimits, numPackages, difficulty)) {
                     cout << "💾 Game saved successfully!" << endl;
                 } else {
@@ -364,10 +367,15 @@ int main() {
         int packagesDelivered = numPackages - packageLocs.size();
         showEndScreen(winGame, moveCount, stepLimits, packagesDelivered, numPackages);
 
+    // ✅ 游戏结束，删除存档文件
+        cout << "Clearing save data..." << endl;
+        remove("game_save.txt");
+        cout << "Save file deleted successfully." << endl;
+
         delete p;
         
         // 返回主菜单
-        cout << "Returning to main menu..." << endl;
+        cout << "Exiting the game..." << endl;
         sleep(2);
     }
 

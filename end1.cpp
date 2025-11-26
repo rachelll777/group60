@@ -26,7 +26,7 @@ void showEndScreen(bool winGame, int moveCount, int stepLimits,
     }
     
     cout << "================================================" << endl;
-    cout << "Press any key to return to main menu...";
+    cout << "Press any key to exit the game...";
     getchar();
     getchar(); // 等待按键
 }
