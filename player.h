@@ -7,7 +7,7 @@
 #include <string>
 
 using namespace std;
-
+// Represents the player’s status including position, inventory, and move limits.
 struct Player {
     int moveCount;
     int moveLimit;
