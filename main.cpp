@@ -21,11 +21,11 @@
 #include "end1.h"
 #include "saveprogress.h"
 
-// 跨平台键盘输入处理
+// Cross-platform keyboard input handling
 #ifdef _WIN32
-    #include <conio.h>  // Windows 使用 conio.h
+    #include <conio.h>  // Windows uses conio.h
 #else
-    // macOS/Linux 使用 termios 实现 getch()
+    // macOS/Linux uses termios to implement getch()
     #include <termios.h>
     #include <stdio.h>
     int getch() {
@@ -48,7 +48,7 @@ int moveCount =0;
 int stepLimits =0;
 extern Difficulty selectedDifficulty;
 
-// Easy模式 10x10
+// Easy mode 10x10 map
 vector<vector<string>> easyBaseMapTemplate = {
         {"#", "#", "#", "#", "#", "#", "#", "#", "#", "#"},
         {"#", " ", " ", " ", " ", " ", " ", " ", " ", "#"},
@@ -62,7 +62,7 @@ vector<vector<string>> easyBaseMapTemplate = {
         {"#", "#", "#", "#", "#", "#", "#", "#", "#", "#"}
     };
 
-// Hard模式 17x17
+// Hard mode 17x17 map
 vector<vector<string>> hardBaseMapTemplate = {
         {"#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#"},
         {"#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#"},
@@ -91,7 +91,7 @@ bool deliveringPackage = false;
 int numDeliveredPackages = -1;
 map<vector<int>, int> allSolutions = {};
 
-// 在地图上随机放置元素
+// Randomly place items on the map
 void placeItemsRandomly(Player *&p) {
     pair<int, int> loc = {rand()%currentMap.size(), rand()%currentMap[0].size()};
     vector<pair<int, int>> usedLocs = {};
@@ -115,7 +115,7 @@ void placeItemsRandomly(Player *&p) {
     }
 }
 
-// 显示地图和物品信息
+// Display map and item info
 void displayMapInfo(Player *&p) {
     cout << "\033[2J\033[1;1H";
     cout << "Controls: W/A/S/D to move, V to save, Q to quit" << endl;
@@ -195,7 +195,7 @@ int pathFinding(pair<int, int> loc1, pair<int, int> loc2) {
     return -1;
 }
 
-// 计算最短配送路径
+// Calculate the shortest delivery path 
 int shortestDelivery(Player *&p) {
     vector<bool> visited(numPackages+1, false);
     vector<int> defaultPath = {};
@@ -237,7 +237,7 @@ void deliverToCustomer(Player *&p, vector<vector<string>>& map, pair<int, int> l
     }
 }
 
-// pick up packages when reach packages
+// pick up packages when reaching packages
 void pickupPackageFromMap(Player *&p) {
     for(size_t i = 0; i < packageLocs.size(); i++) {
         pair<int, int> packLoc = packageLocs[i];
@@ -251,16 +251,16 @@ void pickupPackageFromMap(Player *&p) {
 }
 
 int main() {
-    // 使用intro界面
+     // Load intro menu
     int gameStartType = runIntroLoop();
     
     srand(time(0));
 
-    if(gameStartType == 1 || gameStartType == 2) { // 新游戏或加载游戏
+    if(gameStartType == 1 || gameStartType == 2) { // New game or Load game
         cout << "Starting game..." << endl;
         sleep(1);
         
-        // 使用intro中选择的难度
+        // Use selected difficulty from intro
         string difficulty = (selectedDifficulty == EASY) ? "easy" : "hard";
         
         currentMap = (difficulty=="easy") ? easyBaseMapTemplate : hardBaseMapTemplate;
@@ -270,7 +270,7 @@ int main() {
         p->inventory = {};
         p->moveCount = 0;
 
-        // 如果是加载游戏，从存档读取
+         // If loading saved game
         if(gameStartType == 2) {
             cout << "Loading saved game..." << endl;
             if(!loadGameProgress(p, packageLocs, customerLoc, moveCount, stepLimits, numPackages, difficulty)) {
@@ -282,7 +282,7 @@ int main() {
                 cout << "Game loaded successfully!" << endl;
             }
         } else {
-            // 新游戏
+            // Else start new game
             cout << "Starting new game..." << endl;
             placeItemsRandomly(p);
             int minSteps = shortestDelivery(p);
@@ -339,7 +339,7 @@ int main() {
                     pickupPackageFromMap(p);
                     deliverToCustomer(p, currentMap, p->loc);
 
-                    // 检查胜利条件
+                    // Check win condition
                     if(packageLocs.empty() && p->inventory.empty()) {
                         winGame = true;
                         break;
@@ -355,7 +355,7 @@ int main() {
                 sleep(1);
             }
             
-            // 检查失败条件
+            // Check loss condition (out of moves)
             if(moveCount > stepLimits) {
                 cout << "⏰ You ran out of moves!" << endl;
                 sleep(1);
@@ -363,7 +363,7 @@ int main() {
             }
         }
         
-        // 显示结束界面
+        // Show end screen
         int packagesDelivered = numPackages - packageLocs.size();
         showEndScreen(winGame, moveCount, stepLimits, packagesDelivered, numPackages);
 
