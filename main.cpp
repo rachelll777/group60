@@ -315,7 +315,7 @@ int main() {
 
             if(choice == "Q" || choice == "q") break;
             
-            // 存档功能
+            // saving function
             if(choice == "V" || choice == "v") {
                 if(saveGameProgress(p, packageLocs, customerLoc, moveCount, stepLimits, numPackages, difficulty)) {
                     cout << "💾 Game saved successfully!" << endl;
@@ -367,14 +367,14 @@ int main() {
         int packagesDelivered = numPackages - packageLocs.size();
         showEndScreen(winGame, moveCount, stepLimits, packagesDelivered, numPackages);
 
-    // ✅ 游戏结束，删除存档文件
+    // Delete save file when the game ends
         cout << "Clearing save data..." << endl;
         remove("game_save.txt");
         cout << "Save file deleted successfully." << endl;
 
         delete p;
         
-        // 返回主菜单
+        //  Exit message before quitting the game
         cout << "Exiting the game..." << endl;
         sleep(2);
     }
