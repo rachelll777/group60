@@ -12,19 +12,19 @@ public:
     vector<int> playerLoc;  // [row, col]
     int mapIndex;
     
-    // 多地图系统的指针
+    // Pointers to adjacent maps in a multi-map system
     Map* rightMap;
     Map* leftMap;
     Map* upMap;
     Map* downMap;
     
-    // 出口位置
+    // Exit positions that connect to other maps 
     int UpExit;
     int LeftExit;
     int DownExit;
     int RightExit;
     
-    // 构造函数
+    // Constructor initializes map index and exits
     Map() : mapIndex(0), rightMap(nullptr), leftMap(nullptr), 
             upMap(nullptr), downMap(nullptr), UpExit(-1), 
             LeftExit(-1), DownExit(-1), RightExit(-1) {}
