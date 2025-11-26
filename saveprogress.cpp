@@ -5,6 +5,7 @@
 #include "player.h"
 using namespace std;
 
+// Saves the current game state into a file for future loading
 bool saveGameProgress(Player* p, const vector<pair<int, int>>& packageLocs, 
                      const pair<int, int>& customerLoc, int moveCount, 
                      int stepLimits, int numPackages, const string& difficulty) {
@@ -15,23 +16,23 @@ bool saveGameProgress(Player* p, const vector<pair<int, int>>& packageLocs,
         return false;
     }
     
-    // 保存基本信息 - 所有变量名称与main.cpp一致
+    // Save basic information - variable names are consistent with main.cpp
     saveFile << difficulty << endl;
     saveFile << p->loc.first << " " << p->loc.second << endl;
     saveFile << moveCount << endl;
     saveFile << stepLimits << endl;
     saveFile << numPackages << endl;
     
-    // 保存客户位置
+    // Save customer position
     saveFile << customerLoc.first << " " << customerLoc.second << endl;
     
-    // 保存玩家库存
+    // Save player inventory
     saveFile << p->inventory.size() << endl;
     for (const auto& item : p->inventory) {
         saveFile << item << endl;
     }
     
-    // 保存剩余包裹位置
+    // Save remaining package positions
     saveFile << packageLocs.size() << endl;
     for (const auto& loc : packageLocs) {
         saveFile << loc.first << " " << loc.second << endl;
@@ -52,25 +53,25 @@ bool loadGameProgress(Player*& p, vector<pair<int, int>>& packageLocs,
         return false;
     }
     
-    // 读取基本信息 - 所有变量名称与main.cpp一致
+    // Load basic information - variable names are consistent with main.cpp
     saveFile >> difficulty;
     
-    // 读取玩家位置
+    // Load player position
     int playerX, playerY;
     saveFile >> playerX >> playerY;
     p->loc = {playerX, playerY};
     
-    // 读取移动信息
+    // Load move-related information
     saveFile >> moveCount;
     saveFile >> stepLimits;
     saveFile >> numPackages;
     
-    // 读取客户位置
+    // Load customer position
     int custX, custY;
     saveFile >> custX >> custY;
     customerLoc = {custX, custY};
     
-    // 读取玩家库存
+   // Load player inventory
     p->inventory.clear();
     int inventorySize;
     saveFile >> inventorySize;
@@ -80,7 +81,7 @@ bool loadGameProgress(Player*& p, vector<pair<int, int>>& packageLocs,
         p->inventory.push_back(item);
     }
     
-    // 读取包裹位置
+    // Load remaining package positions
     packageLocs.clear();
     int packageCount;
     saveFile >> packageCount;
