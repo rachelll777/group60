@@ -3,11 +3,13 @@
 #include <vector>
 #include <string>
 #include <cstdio>
+#include <utility> 
+
 #include "player.h"
 using namespace std;
 
 // Saves the current game state into a file for future loading
-bool saveGameProgress(Player* p, const vector<pair<int, int>>& packageLocs, 
+bool saveGameProgress(Player* p, const vector<pair<int, int> >& packageLocs, 
                      const pair<int, int>& customerLoc, int moveCount, 
                      int stepLimits, int numPackages, const string& difficulty) {
     
@@ -49,7 +51,7 @@ bool saveGameProgress(Player* p, const vector<pair<int, int>>& packageLocs,
     return true;
 }
 
-bool loadGameProgress(Player*& p, vector<pair<int, int>>& packageLocs, 
+bool loadGameProgress(Player*& p, vector<pair<int, int> >& packageLocs, 
                      pair<int, int>& customerLoc, int& moveCount, 
                      int& stepLimits, int& numPackages, string& difficulty) {
     
@@ -64,8 +66,10 @@ bool loadGameProgress(Player*& p, vector<pair<int, int>>& packageLocs,
     
     // Load player position
     int playerX, playerY;
-    saveFile >> playerX >> playerY;
-    p->loc = {playerX, playerY};
+    saveFile >> playerX;
+    saveFile >> playerY;
+    pair<int, int> playerLoc = {playerX, playerY};
+    p->loc = playerLoc;
     
     // Load move-related information
     saveFile >> moveCount;
@@ -74,8 +78,10 @@ bool loadGameProgress(Player*& p, vector<pair<int, int>>& packageLocs,
     
     // Load customer position
     int custX, custY;
-    saveFile >> custX >> custY;
-    customerLoc = {custX, custY};
+    saveFile >> custX;
+    saveFile >> custY;
+    pair<int, int> custLoc = {custX, custY};
+    customerLoc = custLoc;
     
    // Load player inventory
     p->inventory.clear();
@@ -94,7 +100,8 @@ bool loadGameProgress(Player*& p, vector<pair<int, int>>& packageLocs,
     for (int i = 0; i < packageCount; i++) {
         int x, y;
         saveFile >> x >> y;
-        packageLocs.push_back({x, y});
+        pair<int, int> tempLoc = {x, y};
+        packageLocs.push_back(tempLoc);
     }
     
     saveFile.close();

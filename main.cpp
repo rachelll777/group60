@@ -17,7 +17,7 @@
 #include <stack>
 
 #include "player.h"
-#include "intro.h"
+// #include "intro.h"
 #include "end1.h"
 #include "saveprogress.h"
 
@@ -56,7 +56,12 @@ string brown = "\033[38;5;94m";
 bool winGame = false;
 int moveCount =0;
 int stepLimits =0;
-extern Difficulty selectedDifficulty;
+int selectedDifficulty = 0; //0 for easy, 1 for hard
+
+
+
+string input;
+
 
 // Easy mode 10x10 map
 vector<vector<string>> easyBaseMapTemplate = {
@@ -267,19 +272,108 @@ void pickupPackageFromMap(Player *&p) {
     }
 }
 
-int main() {
-     // Load intro menu
-    int gameStartType = runIntroLoop();
+void printMainMenu(int selection) {
+    string top =    bBlue + "┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓\n" + white;
+    string empty =  bBlue + "┃" + white + "                                                        " + bBlue + "┃\n" + white;
+    string bottom = bBlue + "┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\n" + white;
     
+    vector<string> title = {
+        bBlue + "┃" + white + "                " + bYellow + "Race Against the Clock!" + white + "                 " + bBlue + "┃\n" + white,
+        bBlue + "┃" + white + "    An excellent courier should deliver packages        " + bBlue + "┃\n" + white,
+        bBlue + "┃" + white + "    quickly and safely! The customer is getting         " + bBlue + "┃\n" + white,
+        bBlue + "┃" + white + "    impatient, find shortcuts to save steps!            " + bBlue + "┃\n" + white,
+        bBlue + "┃" + white + "                      " + bGreen + "Good Luck!" + white + "                        " + bBlue + "┃\n" + white
+    };
+    
+    string butt1 = bBlue + "┃" + white + "               " + bYellow + "[1] Game Instructions" + white + "                    " + bBlue + "┃\n" + white;
+    string butt1high = bBlue + "┃" + white + "               " + bCyan + "[1] Game Instructions" + white + "                    " + bBlue + "┃\n" + white;
+    
+    string butt2 = bBlue + "┃" + white + "               " + bYellow + "[2]  New Easy Game" + white + "                       " + bBlue + "┃\n" + white;
+    string butt2high = bBlue + "┃" + white + "               " + bCyan + "[2]  New Easy Game" + white + "                       " + bBlue + "┃\n" + white;
+
+    string butt3 = bBlue + "┃" + white + "               " + bYellow + "[3]  New Hard Game" + white + "                       " + bBlue + "┃\n" + white;
+    string butt3high = bBlue + "┃" + white + "               " + bCyan + "[3]  New Hard Game" + white + "                       " + bBlue + "┃\n" + white;
+
+    string butt4 = bBlue + "┃" + white + "               " + bYellow + "[4]  Continue Game" + white + "                       " + bBlue + "┃\n" + white;
+    string butt4high = bBlue + "┃" + white + "               " + bCyan + "[4]  Continue Game" + white + "                       " + bBlue + "┃\n" + white;
+    
+    string controls = bBlue + "┃" + white + "    " + bGreen + "W/S:" + white + " Navigate    " + bYellow + "[ E ]:" + white + " Confirm    " + bRed + "Q:" + white + " Back          " + bBlue + "┃\n" + white;
+
+    cout << "\033[2J\033[1;1H";
+    cout << top << empty;
+    for(string line : title) cout << line;
+    cout << empty;
+    
+    // Display menu options
+    if(selection == 0) {
+        cout << butt1high;
+        cout << butt2;
+        cout << butt3;
+        cout << butt4;
+    } else if(selection == 1) {
+        cout << butt1;
+        cout << butt2high;
+        cout << butt3;
+        cout << butt4;
+    } else if(selection == 2) {
+        cout << butt1;
+        cout << butt2;
+        cout << butt3high;
+        cout << butt4;
+    } else if(selection == 3) {
+        cout << butt1;
+        cout << butt2;
+        cout << butt3;
+        cout << butt4high;
+    }
+
+    cout << empty << empty;
+    cout << controls;
+    cout << empty;
+    cout << bottom;
+}
+
+int main() {
+    // Load intro menu
+    
+    
+
+    int currentlySelecting = 1; //1 for instruct, 2 for new game, 3 for continue game
+
+    printMainMenu(currentlySelecting);
+    cin >> input;
+
+    bool quitGame = false;
+    while(input != "Q" || input == "q") {
+        if(input == "W" || input == "w") { //W/w
+            currentlySelecting = (currentlySelecting-1+4)%4;
+        } else if(input == "S" || input == "s") { // S/s
+            currentlySelecting = (currentlySelecting+1+4)%4;
+        } else if(input == "E" || input == "e") { // E/e
+            cout << "Done!" << endl;
+            break;
+        } else if(input == "Q" || input == "q") {
+            quitGame = true;
+            break;
+        }
+        printMainMenu(currentlySelecting);
+        cin >> input;
+    }
+    if(quitGame) {
+        cout << "Thanks for playing!" << endl;
+        return 0;
+    }
     srand(time(0));
 
-    if(gameStartType == 1 || gameStartType == 2) { // New game or Load game
+    if(true) { // New game or Load game
+        //gameStartType == 1 || gameStartType == 2
         cout << bCyan << "Starting game..." << white << endl;
-        sleep(1);
+        // sleep(1);
         
         // Use selected difficulty from intro
-        string difficulty = (selectedDifficulty == EASY) ? "easy" : "hard";
-        
+        string difficulty = (currentlySelecting == 1) ? "easy" : "hard";
+        //selectedDifficulty == EASY
+
         currentMap = (difficulty=="easy") ? easyBaseMapTemplate : hardBaseMapTemplate;
         numPackages = (difficulty=="easy") ? 2 : 5;
         
@@ -288,7 +382,7 @@ int main() {
         p->moveCount = 0;
 
          // If loading saved game
-        if(gameStartType == 2) {
+        if(currentlySelecting == 3) {
             cout << bCyan << "Loading saved game..." << white << endl;
             if(!loadGameProgress(p, packageLocs, customerLoc, moveCount, stepLimits, numPackages, difficulty)) {
                 cout << bRed << "Failed to load game. Starting new game." << white << endl;
@@ -360,7 +454,7 @@ int main() {
                 } else {
                     cout << bRed << "Failed to save game!" << white << endl;
                 }
-                sleep(1);
+                // sleep(1);
                 continue;
             }
             
@@ -385,18 +479,18 @@ int main() {
                     
                 } else {
                     cout << bRed << "Not a valid move. You hit a wall!" << white << endl;
-                    sleep(1);
+                    // sleep(1);
                 }
 
             } else {
                 cout << bRed << "Not a valid key. Use W/A/S/D to move." << white << endl;
-                sleep(1);
+                // sleep(1);
             }
             
             // Check loss condition (out of moves)
             if(moveCount > stepLimits) {
                 cout << bRed << "You ran out of moves!" << white << endl;
-                sleep(1);
+                // sleep(1);
                 break;
             }
         }
@@ -407,14 +501,14 @@ int main() {
 
     // Delete save file when the game ends
         cout << bCyan << "Clearing save data..." << white << endl;
-        remove("game_save.txt");
-        cout << bGreen << "Save file deleted successfully." << white << endl;
+        // remove("game_save.txt");
+        // cout << bGreen << "Save file deleted successfully." << white << endl;
 
         delete p;
         
         //  Exit message before quitting the game
         cout << bCyan << "Exiting the game..." << white << endl;
-        sleep(2);
+        // sleep(2);
     }
 
     cout << bYellow << "Thank you for playing!" << white << endl;
