@@ -4,7 +4,6 @@
 #include <algorithm>
 #include <math.h>
 #include <stdlib.h>
-#include <conio.h>
 #include <iomanip>
 #include <unistd.h>
 #include <sstream>
@@ -15,6 +14,27 @@
 #include "intro.h"
 
 using namespace std;
+
+#ifdef _WIN32
+    #include <conio.h>
+#else
+    #include <termios.h>
+    #include <unistd.h>
+    #include <stdio.h>
+    
+    // getch() for Linux/macOS
+    int getch() {
+        struct termios oldt, newt;
+        int ch;
+        tcgetattr(STDIN_FILENO, &oldt);
+        newt = oldt;
+        newt.c_lflag &= ~(ICANON | ECHO);
+        tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+        ch = getchar();
+        tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+        return ch;
+    }
+#endif
 
 // Global variable definitions
 extern string bGreen, bRed, bYellow, bBlue, bMagenta, bCyan, white;
