@@ -2,17 +2,37 @@
 #include <string>
 #include <vector>
 #include <algorithm>
-#include <math.h>
-#include <stdlib.h>
-#include <conio.h>
+#include <cmath>        // 替代 math.h
+#include <cstdlib>      // 替代 stdlib.h
 #include <iomanip>
 #include <unistd.h>
 #include <sstream>
 #include <fstream>
-
-#include <Windows.h>
-#include <fcntl.h>
 #include "intro.h"
+
+// ==== Cross-platform keyboard input & Windows console setup ==== 
+#ifdef _WIN32          // 在 Windows 上编译时走这里
+    #include <conio.h>
+    #include <windows.h>
+    #include <io.h>
+    #include <fcntl.h>
+#else                  // 在 Linux / macOS（cs server）上走这里
+    #include <termios.h>
+    #include <unistd.h>
+
+    // 自己实现一个 getch()，模仿 Windows 的无回车按键读取
+    int getch() {
+        struct termios oldt, newt;
+        int ch;
+        tcgetattr(STDIN_FILENO, &oldt);
+        newt = oldt;
+        newt.c_lflag &= ~(ICANON | ECHO);
+        tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+        ch = getchar();
+        tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+        return ch;
+    }
+#endif
 
 using namespace std;
 
