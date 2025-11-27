@@ -31,16 +31,16 @@ Lose condition: 1. Quit game. 2: There are packages on the map or at hand when 0
 3. Dynamic memory management: The Player object is dynamically allocated using new and properly deallocated with delete at the end of the game session.
 4. File input/output: The saveprogress file enables saving and loading of game progress.
 5. Multiple files: The codebase is organized across multiple header and implementation files (main.cpp, intro.cpp, end1.cpp, saveprogress.cpp)
-6. Multiple difficulty levels: Easy mode: 10*10 map, 2 packages, Hard mode: 17*17 map, 5 packages
+6. Multiple difficulty levels: Easy mode: 10 times 10 map, 2 packages, Hard mode: 17 times 17 map, 5 packages
 
 --------------------------
 ### Instructions:
-* W-Up movement
-* S-Down movement
-* A-Left movement
-* D-Right movement
-* Q-Quit game
-* S-Save progress
+* "W"-Up movement
+* "S"-Down movement
+* "A"-Left movement
+* "D"-Right movement
+* "Q"-Quit game
+* "S"-Save progress
 * Packages are automatically picked up when the player reaches the position and are automatically delivered when the player reaches the customer
 
 --------------------------
