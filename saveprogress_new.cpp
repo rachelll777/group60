@@ -4,7 +4,7 @@
 #include <string>
 #include <utility>   // ★ for std::pair
 #include <cstdio>
-#include "player.h"
+#include "player_new.h"
 
 using namespace std;
 

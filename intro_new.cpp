@@ -8,7 +8,7 @@
 #include <unistd.h>
 #include <sstream>
 #include <fstream>
-#include "intro.h"
+#include "intro_new.h"
 
 // ==== Cross-platform keyboard input & Windows console setup ==== 
 #ifdef _WIN32          // 在 Windows 上编译时走这里

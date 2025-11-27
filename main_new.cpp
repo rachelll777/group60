@@ -7,11 +7,10 @@
 #include <ctime>
 #include <unistd.h>      // for sleep on Linux
 
-#include "player.h"
-#include "intro.h"
-#include "end1.h"
-#include "saveprogress.h"
-#include "map.h"
+#include "player_new.h"
+#include "intro_new.h"
+#include "end_new.h"
+#include "saveprogress_new.h"
 
 using namespace std;
 

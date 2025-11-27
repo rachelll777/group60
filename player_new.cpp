@@ -1,4 +1,4 @@
-#include "player.h"
+#include "player_new.h"
 #include <iostream>
 
 // add package to inventory
