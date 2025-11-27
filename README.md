@@ -1,5 +1,5 @@
 # **Group60 Package Panic 📦**
-### Group Members:
+## Group Members:
 * Hu Xinyue-3036292556
 * Jia Qinhuan-3036457223
 * Wu Yuerong-3036440579
@@ -24,17 +24,21 @@ https
 6. **Multiple difficulty levels**: `Easy mode`: 10x10 map, 2 packages, `Hard mode`: 17 times 17 map, 5 packages
 
 --------------------------
-### Instructions:
-* `W`-Up movement
-* `S`-Down movement
-* `A`-Left movement
-* `D`-Right movement
-* `Q`-Quit game
-* `S`-Save progress
-* Packages are automatically picked up when the player reaches the position and are automatically delivered when the player reaches the customer!
-  [Uploading Screenshot 2025-11-28 at 01.42.26.png…]()
+## Instructions:
+1. **Start the Game:**
+   - Launch the game and choose your difficulty level (**Easy** or **Hard**).
+   
+2. **Controls:**
+   - Use the following keys to control your character:
+     - **`A`**: Move left
+     - **`D`**: Move right
+     - **`W`**: Jump
+     - **`Q`**: Quit the game
+     - Important: In order to jump, you must hit **`W`** first, then hit **`A`** fast to jump leftwards (hit **`D`** fast to jump rightwards).
+       
 
-
+3. **Completion and Scoring:**
+   
 --------------------------
 ### Compilation:
 1. Navigate to the project directory
