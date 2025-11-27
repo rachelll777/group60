@@ -16,14 +16,14 @@
 
 using namespace std;
 
-// 全局变量定义
+// Global variable definitions
 int input;
 GameState currentState = MAIN_MENU;
 int menuSelection = 0;
 int difficultySelection = 0;
 Difficulty selectedDifficulty = EASY;
 bool saveFileExists = false;
-string saveFileName = "game_save.txt";  // 改为与saveprogress.cpp一致
+string saveFileName = "game_save.txt";  // Same name as in saveprogress.cpp
 
 string bGreen = "\033[1;32m";
 string bRed = "\033[1;31m";
@@ -68,7 +68,7 @@ bool checkSaveFile() {
     return file.good();
 }
 
-// 新增：从存档加载游戏的函数
+// New helper: check if a valid save file exists (basic validation)
 bool loadGameFromSave() {
     ifstream saveFile(saveFileName);
     if (!saveFile.is_open()) {
@@ -76,7 +76,7 @@ bool loadGameFromSave() {
         return false;
     }
     
-    // 这里只检查存档文件的基本信息，具体加载逻辑在main.cpp中实现
+    // Only check basic information here; detailed loading is done in main.cpp
     string difficulty;
     saveFile >> difficulty;
     
@@ -275,11 +275,11 @@ void startGame() {
     
     while(true) {
         input = getch();
-        if(input == 27) { // ESC key - 返回主菜单
+        if(input == 27) { // ESC key - return to main menu
             currentState = MAIN_MENU;
             break;
         } else if(input == 13) { // ENTER key 
-            break;  // 跳出循环，让runIntroLoop返回1
+            break;  // Exit loop and let runIntroLoop return 1
         }
     }
 }
@@ -287,8 +287,8 @@ void startGame() {
 void handleMainMenuInput() {
     input = getch();
     
-    // 动态计算菜单选项总数
-    int menuItemCount = saveFileExists ? 3 : 2; // 有存档：3选项，无存档：2选项
+    // Dynamically compute the number of menu items
+    int menuItemCount = saveFileExists ? 3 : 2; // With save: 3 options, without save: 2 options
     
     if(input == 87 || input == 119) { // W/w
         menuSelection = (menuSelection - 1 + menuItemCount) % menuItemCount;
@@ -301,15 +301,15 @@ void handleMainMenuInput() {
                 break;
             case 1: 
                 if(saveFileExists) {
-                    // ✅ 修正：选项1是 New Game（选择难度开始新游戏）
+                      // Option 1: New Game (select difficulty and start new game)
                     currentState = DIFFICULTY_SELECT;
                 } else {
-                    // 无存档时：选项1是选择难度（新游戏）
+                   // Without save file: Option 1 is also New Game
                     currentState = DIFFICULTY_SELECT;
                 }
                 break;
             case 2:
-                // ✅ 修正：选项2是 Continue Game（加载存档）
+               // Option 2: Continue Game (load saved progress)
                 currentState = LOAD_GAME;
                 break;
         }
@@ -338,18 +338,18 @@ void handleDifficultyInput() {
     }
 }
 
-// 新增的主循环函数 - 替换原来的main函数
+// Main intro/menu loop function - replaces the original main()
 int runIntroLoop() {
     SetConsoleOutputCP(CP_UTF8);
     _setmode(_fileno(stdout), CP_UTF8);
     cout << fixed << setprecision(2);
     srand(time(0));
 
-    // 检查存档文件是否存在 - 使用与saveprogress.cpp相同的文件名
+    // Check if a save file exists - using the same name as in saveprogress.cpp
     saveFileExists = checkSaveFile();
     if(saveFileExists) {
         cout << "Save file found! 'Continue Game' option enabled." << endl;
-        // 验证存档文件是否有效
+        // Verify if the save file is valid
         if (loadGameFromSave()) {
             cout << "Valid save file detected. You can continue your game." << endl;
         } else {
@@ -370,6 +370,7 @@ int runIntroLoop() {
                 printInstructions();
                 input = getch();
                 if(input == 113 || input == 81) { // Q/q
+                // Return to main menu
                     currentState = MAIN_MENU;
                 }
                 break;
@@ -384,14 +385,14 @@ int runIntroLoop() {
                 if (currentState == MAIN_MENU) {
                     break;
                 } else {
-                    return 1;
+                    return 1;// Return 1 to start a new game
                 }
                 break;
 
             case LOAD_GAME:
                 cout << "Loading game from save file..." << endl;
                 sleep(2);
-                return 2;  // 返回2表示加载游戏
+                return 2;   // Return 2 to load saved game
                 break;
         }
     }
