@@ -360,8 +360,11 @@ void handleDifficultyInput() {
 
 // Main intro/menu loop function - replaces the original main()
 int runIntroLoop() {
+#ifdef _WIN32   // Only on Windows
     SetConsoleOutputCP(CP_UTF8);
-    _setmode(_fileno(stdout), CP_UTF8);
+    _setmode(_fileno(stdout), _O_U8TEXT);
+#endif
+
     cout << fixed << setprecision(2);
     srand(time(0));
 
