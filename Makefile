@@ -7,13 +7,13 @@ LDFLAGS =
 TARGET = game
 
 # Source files
-SRCS = main_new.cpp intro_new.cpp end_new.cpp saveprogress_new.cpp
+SRCS = main.cpp intro.cpp end1.cpp saveprogress.cpp player.cpp
 
 # Object files
 OBJS = $(SRCS:.cpp=.o)
 
 # Header files
-HEADERS = player_new.h intro_new.h end_new.h saveprogress_new.h
+HEADERS = player.h intro.h end1.h saveprogress.h
 
 # Default target
 all: $(TARGET)
