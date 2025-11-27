@@ -1,4 +1,4 @@
-# **Group60 Package Panic 📦**
+<img width="742" height="681" alt="Screenshot 2025-11-28 at 01 42 26" src="https://github.com/user-attachments/assets/1d941297-119b-40c1-b90b-21c754b9f7d8" /># **Group60 Package Panic 📦**
 ### Group Members:
 * Hu Xinyue-3036292556
 * Jia Qinhuan-3036457223
@@ -25,13 +25,15 @@ https
 
 --------------------------
 ### Instructions:
-* "W"-Up movement
-* "S"-Down movement
-* "A"-Left movement
-* "D"-Right movement
-* "Q"-Quit game
-* "S"-Save progress
-* Packages are automatically picked up when the player reaches the position and are automatically delivered when the player reaches the customer
+* `W`-Up movement
+* `S`-Down movement
+* `A`-Left movement
+* `D`-Right movement
+* `Q`-Quit game
+* `S`-Save progress
+* Packages are automatically picked up when the player reaches the position and are automatically delivered when the player reaches the customer!
+  [Uploading Screenshot 2025-11-28 at 01.42.26.png…]()
+
 
 --------------------------
 ### Compilation:
