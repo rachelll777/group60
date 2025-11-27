@@ -1,4 +1,4 @@
-<img width="742" height="681" alt="Screenshot 2025-11-28 at 01 42 26" src="https://github.com/user-attachments/assets/1d941297-119b-40c1-b90b-21c754b9f7d8" /># **Group60 Package Panic 📦**
+># **Group60 Package Panic 📦**
 ### Group Members:
 * Hu Xinyue-3036292556
 * Jia Qinhuan-3036457223
