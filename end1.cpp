@@ -8,13 +8,13 @@ void showEndScreen(bool winGame, int moveCount, int stepLimits,
     cout << "================================================" << endl;
     cout << "           GAME OVER" << endl;
     cout << "================================================" << endl;
-    
+     // Check whether the player has won the game
     if (winGame) {
         cout << "🎉 CONGRATULATIONS! YOU WIN! 🎉" << endl;
         cout << "You delivered all " << packagesDelivered << " packages!" << endl;
         cout << "Moves used: " << moveCount << "/" << stepLimits << endl;
         cout << "Excellent delivery service!" << endl;
-    } else {
+    }  else { // Check whether the player has won the game
         cout << "💀 GAME OVER - YOU LOST 💀" << endl;
         if (moveCount > stepLimits) {
             cout << "You ran out of moves!" << endl;
@@ -28,5 +28,5 @@ void showEndScreen(bool winGame, int moveCount, int stepLimits,
     cout << "================================================" << endl;
     cout << "Press any key to exit the game...";
     getchar();
-    getchar(); // 等待按键
+    getchar(); // Wait for user input before exiting
 }
