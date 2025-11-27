@@ -1,4 +1,4 @@
-># **Group60 Package Panic 📦**
+# **Group60 Package Panic 📦**
 ### Group Members:
 * Hu Xinyue-3036292556
 * Jia Qinhuan-3036457223
