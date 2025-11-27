@@ -22,7 +22,7 @@ enum Difficulty {
     HARD     // Large map + 5 packages
 };
 
-// 全局变量声明
+// Global variable declarations
 extern int input;
 extern GameState currentState;
 extern int menuSelection;
@@ -31,35 +31,35 @@ extern Difficulty selectedDifficulty;
 extern bool saveFileExists;
 extern string saveFileName;
 
-// 颜色代码
+// Color code strings
 extern string bGreen;
 extern string bRed;
 extern string bYellow;
 extern string bBlue;
 extern string white;
 
-// 游戏规则文本
+// Game rules text
 extern vector<string> gameRules;
 
-// 工具函数声明
+// Utility function declarations
 string vectorToString(vector<string> arr);
 void clearScreen();
 bool checkSaveFile();
 
-// 界面显示函数
+// Screen / UI display functions
 void printMainMenu();
 void printInstructions();
 void printDifficultySelect();
 void startGame();
 
-// 输入处理函数
+// Input handling functions
 void handleMainMenuInput();
 void handleDifficultyInput();
 
-// 存档相关函数
+// Save file related function
 bool loadGameFromSave();
 
-// 主循环函数 - 供其他文件调用
+// Main loop function - callable from other files
 int runIntroLoop();
 
 #endif
