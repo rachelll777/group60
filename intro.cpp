@@ -29,27 +29,29 @@ string bGreen = "\033[1;32m";
 string bRed = "\033[1;31m";
 string bYellow = "\033[1;33m";
 string bBlue = "\033[1;34m";
+string bMagenta = "\033[1;35m";
+string bCyan = "\033[1;36m";
 string white = "\033[0m";
 
 // Game rules text
 vector<string> gameRules = {
-    "┃                   Game Instructions                    ┃\n",
-    "┃                                                        ┃\n",
-    "┃  1. Choose difficulty: Rookie(small map, 2 packages)   ┃\n",
-    "┃     or Expert(large map, 5 packages)                   ┃\n",
-    "┃  2. Use WASD keys to move on the map (press ENTER)     ┃\n",
-    "┃  3. Automatically pick up packages (1) when stepping   ┃\n",
-    "┃     on package locations                               ┃\n",
-    "┃  4. Automatically deliver all packages at hand when    ┃\n",
-    "┃     stepping on customer location (C)                  ┃\n",
-    "┃  5. Press V to save game at any time                   ┃\n",
-    "┃  6. Press Q to quit game                               ┃\n",
-    "┃  7. Deliver all packages to customer within step limit ┃\n",
-    "┃                                                        ┃\n",
-    "┃  Win Condition: Steps remaining >= 0 AND all packages  ┃\n",
-    "┃                 delivered to customer                  ┃\n",
-    "┃  Lose Condition: Run out of steps with packages        ┃\n",
-    "┃                 remaining OR quit game                 ┃\n"
+    bCyan + "┃" + white + "                   " + bYellow + "Game Instructions" + white + "                    " + bCyan + "┃\n" + white,
+    bCyan + "┃" + white + "                                                        " + bCyan + "┃\n" + white,
+    bCyan + "┃" + white + "  " + bGreen + "1." + white + " Choose difficulty: " + bYellow + "Rookie" + white + "(small map, 2 packages)   " + bCyan + "┃\n" + white,
+    bCyan + "┃" + white + "     or " + bRed + "Expert" + white + "(large map, 5 packages)                   " + bCyan + "┃\n" + white,
+    bCyan + "┃" + white + "  " + bGreen + "2." + white + " Use " + bYellow + "WASD" + white + " keys to move on the map (press ENTER)     " + bCyan + "┃\n" + white,
+    bCyan + "┃" + white + "  " + bGreen + "3." + white + " Automatically pick up packages (" + bGreen + "1" + white + ") when stepping   " + bCyan + "┃\n" + white,
+    bCyan + "┃" + white + "     on package locations                               " + bCyan + "┃\n" + white,
+    bCyan + "┃" + white + "  " + bGreen + "4." + white + " Automatically deliver all packages at hand when    " + bCyan + "┃\n" + white,
+    bCyan + "┃" + white + "     stepping on customer location (" + bCyan + "C" + white + ")                  " + bCyan + "┃\n" + white,
+    bCyan + "┃" + white + "  " + bGreen + "5." + white + " Press " + bBlue + "V" + white + " to save game at any time                   " + bCyan + "┃\n" + white,
+    bCyan + "┃" + white + "  " + bGreen + "6." + white + " Press " + bRed + "Q" + white + " to quit game                               " + bCyan + "┃\n" + white,
+    bCyan + "┃" + white + "  " + bGreen + "7." + white + " Deliver all packages to customer within step limit " + bCyan + "┃\n" + white,
+    bCyan + "┃" + white + "                                                        " + bCyan + "┃\n" + white,
+    bCyan + "┃" + white + "  " + bGreen + "Win Condition:" + white + " Steps remaining >= 0 AND all packages  " + bCyan + "┃\n" + white,
+    bCyan + "┃" + white + "                 delivered to customer                  " + bCyan + "┃\n" + white,
+    bCyan + "┃" + white + "  " + bRed + "Lose Condition:" + white + " Run out of steps with packages        " + bCyan + "┃\n" + white,
+    bCyan + "┃" + white + "                 remaining OR quit game                 " + bCyan + "┃\n" + white
 };
 
 // Utility functions
@@ -72,7 +74,7 @@ bool checkSaveFile() {
 bool loadGameFromSave() {
     ifstream saveFile(saveFileName);
     if (!saveFile.is_open()) {
-        cout << "No saved game found!" << endl;
+        cout << bRed << "No saved game found!" << white << endl;
         return false;
     }
     
@@ -81,7 +83,7 @@ bool loadGameFromSave() {
     saveFile >> difficulty;
     
     if (difficulty == "easy" || difficulty == "hard") {
-        cout << "Valid save file detected!" << endl;
+        cout << bGreen << "Valid save file detected!" << white << endl;
         saveFile.close();
         return true;
     }
@@ -91,46 +93,46 @@ bool loadGameFromSave() {
 }
 
 void printMainMenu() {
-    string top =    "┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓\n";
-    string empty =  "┃                                                        ┃\n";
-    string bottom = "┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\n";
+    string top =    bBlue + "┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓\n" + white;
+    string empty =  bBlue + "┃" + white + "                                                        " + bBlue + "┃\n" + white;
+    string bottom = bBlue + "┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\n" + white;
     
     vector<string> title = {
-        "┃                Race Against the Clock!                 ┃\n",
-        "┃    An excellent courier should deliver packages        ┃\n",
-        "┃    quickly and safely! The customer is getting         ┃\n",
-        "┃    impatient, find shortcuts to save steps!            ┃\n",
-        "┃                      Good Luck!                        ┃\n"
+        bBlue + "┃" + white + "                " + bYellow + "Race Against the Clock!" + white + "                 " + bBlue + "┃\n" + white,
+        bBlue + "┃" + white + "    An excellent courier should deliver packages        " + bBlue + "┃\n" + white,
+        bBlue + "┃" + white + "    quickly and safely! The customer is getting         " + bBlue + "┃\n" + white,
+        bBlue + "┃" + white + "    impatient, find shortcuts to save steps!            " + bBlue + "┃\n" + white,
+        bBlue + "┃" + white + "                      " + bGreen + "Good Luck!" + white + "                        " + bBlue + "┃\n" + white
     };
     
     vector<string> butt1high = {
-        "┃               ╭─────────────────────────╮              ┃\n",
-        "┃               │ [1] Game Instructions   │              ┃\n",
-        "┃               ╰─────────────────────────╯              ┃\n"
+        bBlue + "┃" + white + "               " + bGreen + "╭─────────────────────────╮" + white + "              " + bBlue + "┃\n" + white,
+        bBlue + "┃" + white + "               " + bGreen + "│" + bYellow + " [1] Game Instructions   " + bGreen + "│" + white + "              " + bBlue + "┃\n" + white,
+        bBlue + "┃" + white + "               " + bGreen + "╰─────────────────────────╯" + white + "              " + bBlue + "┃\n" + white
     };
     vector<string> butt1 = {
-        "┃               [1] Game Instructions                    ┃\n"
+        bBlue + "┃" + white + "               " + bYellow + "[1] Game Instructions" + white + "                    " + bBlue + "┃\n" + white
     };
     
     vector<string> butt2high = {
-    "┃               ╭─────────────────────────╮              ┃\n",
-    "┃               │ [2]  New Game           │              ┃\n",  // 改为Continue Game
-    "┃               ╰─────────────────────────╯              ┃\n"
+        bBlue + "┃" + white + "               " + bGreen + "╭─────────────────────────╮" + white + "              " + bBlue + "┃\n" + white,
+        bBlue + "┃" + white + "               " + bGreen + "│" + bYellow + " [2]  New Game           " + bGreen + "│" + white + "              " + bBlue + "┃\n" + white,
+        bBlue + "┃" + white + "               " + bGreen + "╰─────────────────────────╯" + white + "              " + bBlue + "┃\n" + white
     };
     vector<string> butt2 = {
-    "┃               [2]  New Game                            ┃\n"  // 改为Continue Game
+        bBlue + "┃" + white + "               " + bYellow + "[2]  New Game" + white + "                            " + bBlue + "┃\n" + white
     };
 
     vector<string> butt3high = {
-    "┃               ╭─────────────────────────╮              ┃\n",
-    "┃               │ [3]  Continue Game      │              ┃\n",  // 改为New Game
-    "┃               ╰─────────────────────────╯              ┃\n"
+        bBlue + "┃" + white + "               " + bGreen + "╭─────────────────────────╮" + white + "              " + bBlue + "┃\n" + white,
+        bBlue + "┃" + white + "               " + bGreen + "│" + bCyan + " [3]  Continue Game      " + bGreen + "│" + white + "              " + bBlue + "┃\n" + white,
+        bBlue + "┃" + white + "               " + bGreen + "╰─────────────────────────╯" + white + "              " + bBlue + "┃\n" + white
     };
     vector<string> butt3 = {
-    "┃               [3]  Continue Game                       ┃\n"  // 改为New Game
+        bBlue + "┃" + white + "               " + bCyan + "[3]  Continue Game" + white + "                       " + bBlue + "┃\n" + white
     };
     
-    string controls = "┃    W/S: Navigate    Enter: Confirm    Q: Back          ┃\n";
+    string controls = bBlue + "┃" + white + "    " + bGreen + "W/S:" + white + " Navigate    " + bYellow + "Enter:" + white + " Confirm    " + bRed + "Q:" + white + " Back          " + bBlue + "┃\n" + white;
 
     clearScreen();
     cout << top << empty;
@@ -163,59 +165,59 @@ void printMainMenu() {
 }
 
 void printInstructions() {
-    string top =    "┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓\n";
-    string empty =  "┃                                                        ┃\n";
-    string bottom = "┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\n";
+    string top =    bCyan + "┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓\n" + white;
+    string empty =  bCyan + "┃" + white + "                                                        " + bCyan + "┃\n" + white;
+    string bottom = bCyan + "┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\n" + white;
     
     clearScreen();
     cout << top;
     for(string line : gameRules) cout << line;
     cout << empty;
-    cout << "┃              Press Q to return to Main Menu            ┃\n";
+    cout << bCyan + "┃" + white + "              Press " + bRed + "Q" + white + " to return to Main Menu            " + bCyan + "┃\n" + white;
     cout << empty;
     cout << bottom;
 }
 
 void printDifficultySelect() {
-    string top =    "┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓\n";
-    string empty =  "┃                                                        ┃\n";
-    string bottom = "┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\n";
+    string top =    bYellow + "┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓\n" + white;
+    string empty =  bYellow + "┃" + white + "                                                        " + bYellow + "┃\n" + white;
+    string bottom = bYellow + "┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\n" + white;
     
     vector<string> title = {
-        "┃                  Select Difficulty                     ┃\n",
-        "┃                                                        ┃\n"
+        bYellow + "┃" + white + "                  " + bCyan + "Select Difficulty" + white + "                     " + bYellow + "┃\n" + white,
+        bYellow + "┃" + white + "                                                        " + bYellow + "┃\n" + white
     };
     
     vector<string> easyHigh = {
-        "┃              ╭─────────────────────────────╮           ┃\n",
-        "┃              │ [1] Rookie Mode- Small Map  │           ┃\n",
-        "┃              │     2 Packages              │           ┃\n",
-        "┃              ╰─────────────────────────────╯           ┃\n"
+        bYellow + "┃" + white + "              " + bGreen + "╭─────────────────────────────╮" + white + "           " + bYellow + "┃\n" + white,
+        bYellow + "┃" + white + "              " + bGreen + "│" + bYellow + " [1] Rookie Mode- Small Map  " + bGreen + "│" + white + "           " + bYellow + "┃\n" + white,
+        bYellow + "┃" + white + "              " + bGreen + "│" + bYellow + "     2 Packages              " + bGreen + "│" + white + "           " + bYellow + "┃\n" + white,
+        bYellow + "┃" + white + "              " + bGreen + "╰─────────────────────────────╯" + white + "           " + bYellow + "┃\n" + white
     };
     vector<string> easyNormal = {
-        "┃              [1] Rookie Mode - Small Map (2 Packages)  ┃\n"
+        bYellow + "┃" + white + "              " + bGreen + "[1] Rookie Mode - Small Map (2 Packages)" + white + "  " + bYellow + "┃\n" + white
     };
     
     vector<string> hardHigh = {
-        "┃              ╭─────────────────────────────╮           ┃\n",
-        "┃              │ [2] Expert Mode - Large Map │           ┃\n",
-        "┃              │     5 Packages              │           ┃\n",
-        "┃              ╰─────────────────────────────╯           ┃\n"
+        bYellow + "┃" + white + "              " + bRed + "╭─────────────────────────────╮" + white + "           " + bYellow + "┃\n" + white,
+        bYellow + "┃" + white + "              " + bRed + "│" + bYellow + " [2] Expert Mode - Large Map " + bRed + "│" + white + "           " + bYellow + "┃\n" + white,
+        bYellow + "┃" + white + "              " + bRed + "│" + bYellow + "     5 Packages              " + bRed + "│" + white + "           " + bYellow + "┃\n" + white,
+        bYellow + "┃" + white + "              " + bRed + "╰─────────────────────────────╯" + white + "           " + bYellow + "┃\n" + white
     };
     vector<string> hardNormal = {
-        "┃              [2] Expert Mode - Large Map (5 Packages)  ┃\n"
+        bYellow + "┃" + white + "              " + bRed + "[2] Expert Mode - Large Map (5 Packages)" + white + "  " + bYellow + "┃\n" + white
     };
     
     vector<string> startHigh = {
-        "┃              ╭─────────────────────────────╮           ┃\n",
-        "┃              │ [3] Start Game              │           ┃\n",
-        "┃              ╰─────────────────────────────╯           ┃\n"
+        bYellow + "┃" + white + "              " + bBlue + "╭─────────────────────────────╮" + white + "           " + bYellow + "┃\n" + white,
+        bYellow + "┃" + white + "              " + bBlue + "│" + bGreen + " [3] Start Game              " + bBlue + "│" + white + "           " + bYellow + "┃\n" + white,
+        bYellow + "┃" + white + "              " + bBlue + "╰─────────────────────────────╯" + white + "           " + bYellow + "┃\n" + white
     };
     vector<string> startNormal = {
-        "┃              [3] Start Game                            ┃\n"
+        bYellow + "┃" + white + "              " + bBlue + "[3] Start Game" + white + "                            " + bYellow + "┃\n" + white
     };
     
-    string controls = "┃    W/S: Navigate    Enter: Confirm    Q: Back          ┃\n";
+    string controls = bYellow + "┃" + white + "    " + bGreen + "W/S:" + white + " Navigate    " + bYellow + "Enter:" + white + " Confirm    " + bRed + "Q:" + white + " Back          " + bYellow + "┃\n" + white;
 
     clearScreen();
     cout << top;
@@ -245,31 +247,31 @@ void printDifficultySelect() {
 
 void startGame() {
     clearScreen();
-    string top =    "┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓\n";
-    string empty =  "┃                                                        ┃\n";
-    string bottom = "┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\n";
+    string top =    bGreen + "┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓\n" + white;
+    string empty =  bGreen + "┃" + white + "                                                        " + bGreen + "┃\n" + white;
+    string bottom = bGreen + "┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\n" + white;
     
     cout << top << empty;
-    cout << "┃            Ready to Race Against the Clock?            ┃\n";
+    cout << bGreen + "┃" + white + "            " + bYellow + "Ready to Race Against the Clock?" + white + "            " + bGreen + "┃\n" + white;
     cout << empty;
     
     if(selectedDifficulty == EASY) {
-        cout << "┃               You are a rookie courier                 ┃\n";
-        cout << "┃               New to the small town                    ┃\n";
-        cout << "┃               With 2 packages to deliver               ┃\n";
+        cout << bGreen + "┃" + white + "               " + bCyan + "You are a rookie courier" + white + "                 " + bGreen + "┃\n" + white;
+        cout << bGreen + "┃" + white + "               " + bCyan + "New to the small town" + white + "                    " + bGreen + "┃\n" + white;
+        cout << bGreen + "┃" + white + "               " + bCyan + "With 2 packages to deliver" + white + "               " + bGreen + "┃\n" + white;
     } else {
-        cout << "┃               You are an expert courier                ┃\n";
-        cout << "┃               Who is familiar with the city            ┃\n";
-        cout << "┃               With 5 packages to deliver               ┃\n";
+        cout << bGreen + "┃" + white + "               " + bRed + "You are an expert courier" + white + "                " + bGreen + "┃\n" + white;
+        cout << bGreen + "┃" + white + "               " + bRed + "Who is familiar with the city" + white + "            " + bGreen + "┃\n" + white;
+        cout << bGreen + "┃" + white + "               " + bRed + "With 5 packages to deliver" + white + "               " + bGreen + "┃\n" + white;
     }
     
     cout << empty;
-    cout << "┃               Use WASD to move                         ┃\n";
-    cout << "┃               Press V to save game                     ┃\n";
-    cout << "┃               Press ESC to return to menu              ┃\n";
-    cout << "┃               Press ENTER to start game                ┃\n";
+    cout << bGreen + "┃" + white + "               Use " + bYellow + "WASD" + white + " to move                         " + bGreen + "┃\n" + white;
+    cout << bGreen + "┃" + white + "               Press " + bBlue + "V" + white + " to save game                     " + bGreen + "┃\n" + white;
+    cout << bGreen + "┃" + white + "               Press " + bRed + "ESC" + white + " to return to menu              " + bGreen + "┃\n" + white;
+    cout << bGreen + "┃" + white + "               Press " + bGreen + "ENTER" + white + " to start game                " + bGreen + "┃\n" + white;
     cout << empty;
-    cout << "┃                      Good Luck!                        ┃\n";
+    cout << bGreen + "┃" + white + "                      " + bYellow + "Good Luck!" + white + "                        " + bGreen + "┃\n" + white;
     cout << empty;
     cout << bottom;
     
@@ -348,12 +350,12 @@ int runIntroLoop() {
     // Check if a save file exists - using the same name as in saveprogress.cpp
     saveFileExists = checkSaveFile();
     if(saveFileExists) {
-        cout << "Save file found! 'Continue Game' option enabled." << endl;
+        cout << bGreen << "Save file found! 'Continue Game' option enabled." << white << endl;
         // Verify if the save file is valid
         if (loadGameFromSave()) {
-            cout << "Valid save file detected. You can continue your game." << endl;
+            cout << bGreen << "Valid save file detected. You can continue your game." << white << endl;
         } else {
-            cout << "Save file is corrupted. Starting new game." << endl;
+            cout << bRed << "Save file is corrupted. Starting new game." << white << endl;
             saveFileExists = false;
         }
         sleep(2); 
@@ -390,7 +392,7 @@ int runIntroLoop() {
                 break;
 
             case LOAD_GAME:
-                cout << "Loading game from save file..." << endl;
+                cout << bCyan << "Loading game from save file..." << white << endl;
                 sleep(2);
                 return 2;   // Return 2 to load saved game
                 break;

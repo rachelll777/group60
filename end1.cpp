@@ -88,7 +88,7 @@ void showEndScreen(bool winGame, int moveCount, int stepLimits,
              
         cout << RED << "║  " << RESET << "🎯 " << "Completion Rate: " 
              << BOLD << YELLOW << setw(2) << completionRate << "%" 
-             << RESET << RED << "                          ║" << RESET << endl;
+             << RESET << RED << "                         ║" << RESET << endl;
         
         cout << RED << "║                                                  ║" << RESET << endl;
         cout << RED << "║  " << RESET << BOLD << CYAN << "Don't give up! Better luck next time!" << RED << "           ║" << RESET << endl;
