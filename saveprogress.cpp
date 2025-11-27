@@ -2,6 +2,7 @@
 #include <fstream>
 #include <vector>
 #include <string>
+#include <cstdio>
 #include "player.h"
 using namespace std;
 
@@ -10,6 +11,11 @@ bool saveGameProgress(Player* p, const vector<pair<int, int>>& packageLocs,
                      const pair<int, int>& customerLoc, int moveCount, 
                      int stepLimits, int numPackages, const string& difficulty) {
     
+    string filename = "game_save.txt";
+    
+    // delete previously saved file
+    remove(filename.c_str());
+
     ofstream saveFile("game_save.txt");
     if (!saveFile.is_open()) {
         cout << "Error: Cannot create save file!" << endl;
