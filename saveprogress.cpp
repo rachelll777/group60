@@ -11,7 +11,7 @@ using namespace std;
 // Saves the current game state into a file for future loading
 bool saveGameProgress(Player* p, const vector<pair<int, int> >& packageLocs, 
                      const pair<int, int>& customerLoc, int moveCount, 
-                     int stepLimits, int numPackages, const string& difficulty) {
+                     int stepLimits, int numPackages, string& difficulty) {
     
     string filename = "game_save.txt";
     

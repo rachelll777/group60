@@ -9,7 +9,7 @@
 #include <sstream>
 #include <fstream>
 
-#include <Windows.h>
+// #include <Windows.h>
 #include <fcntl.h>
 #include "intro.h"
 
@@ -355,8 +355,8 @@ void handleDifficultyInput() {
 
 // Main intro/menu loop function - replaces the original main()
 int runIntroLoop() {
-    SetConsoleOutputCP(CP_UTF8);
-    _setmode(_fileno(stdout), CP_UTF8);
+    // SetConsoleOutputCP(CP_UTF8);
+    // _setmode(_fileno(stdout), CP_UTF8);
     cout << fixed << setprecision(2);
     srand(time(0));
 

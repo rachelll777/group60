@@ -333,12 +333,49 @@ void printMainMenu(int selection) {
     cout << bottom;
 }
 
+void printInstructions() {
+    string top =    bCyan + "┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓\n" + white;
+    string empty =  bCyan + "┃" + white + "                                                        " + bCyan + "┃\n" + white;
+    string bottom = bCyan + "┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\n" + white;
+    vector<string> gameRules = {
+        bCyan + "┃" + white + "                   " + bYellow + "Game Instructions" + white + "                    " + bCyan + "┃\n" + white,
+        bCyan + "┃" + white + "                                                        " + bCyan + "┃\n" + white,
+        bCyan + "┃" + white + "  " + bGreen + "1." + white + " Choose difficulty: " + bYellow + "Rookie" + white + "(small map, 2 packages)   " + bCyan + "┃\n" + white,
+        bCyan + "┃" + white + "     or " + bRed + "Expert" + white + "(large map, 5 packages)                   " + bCyan + "┃\n" + white,
+        bCyan + "┃" + white + "  " + bGreen + "2." + white + " Use " + bYellow + "WASD" + white + " keys to move on the map (press ENTER)     " + bCyan + "┃\n" + white,
+        bCyan + "┃" + white + "  " + bGreen + "3." + white + " Automatically pick up packages (" + bGreen + "1" + white + ") when stepping   " + bCyan + "┃\n" + white,
+        bCyan + "┃" + white + "     on package locations                               " + bCyan + "┃\n" + white,
+        bCyan + "┃" + white + "  " + bGreen + "4." + white + " Automatically deliver all packages at hand when    " + bCyan + "┃\n" + white,
+        bCyan + "┃" + white + "     stepping on customer location (" + bCyan + "C" + white + ")                  " + bCyan + "┃\n" + white,
+        bCyan + "┃" + white + "  " + bGreen + "5." + white + " Press " + bBlue + "V" + white + " to save game at any time                   " + bCyan + "┃\n" + white,
+        bCyan + "┃" + white + "  " + bGreen + "6." + white + " Press " + bRed + "Q" + white + " to quit game                               " + bCyan + "┃\n" + white,
+        bCyan + "┃" + white + "  " + bGreen + "7." + white + " Deliver all packages to customer within step limit " + bCyan + "┃\n" + white,
+        bCyan + "┃" + white + "                                                        " + bCyan + "┃\n" + white,
+        bCyan + "┃" + white + "  " + bGreen + "Win Condition:" + white + " Steps remaining >= 0 AND all packages  " + bCyan + "┃\n" + white,
+        bCyan + "┃" + white + "                 delivered to customer                  " + bCyan + "┃\n" + white,
+        bCyan + "┃" + white + "  " + bRed + "Lose Condition:" + white + " Run out of steps with packages        " + bCyan + "┃\n" + white,
+        bCyan + "┃" + white + "                 remaining OR quit game                 " + bCyan + "┃\n" + white
+    };
+
+    cout << "\033[2J\033[1;1H";
+    cout << top;
+    for(string line : gameRules) cout << line;
+    cout << empty;
+    cout << bCyan + "┃" + white + "              Press " + bRed + "Q" + white + " to return to Main Menu            " + bCyan + "┃\n" + white;
+    cout << "Press Enter to go back to menu" << endl;
+    cout << empty;
+    cout << bottom;
+}
+
+
+
+
 int main() {
     // Load intro menu
     
     
 
-    int currentlySelecting = 1; //1 for instruct, 2 for new game, 3 for continue game
+    int currentlySelecting = 0; //1 for instruct, 2 for new game, 3 for continue game
 
     printMainMenu(currentlySelecting);
     cin >> input;
@@ -350,8 +387,11 @@ int main() {
         } else if(input == "S" || input == "s") { // S/s
             currentlySelecting = (currentlySelecting+1+4)%4;
         } else if(input == "E" || input == "e") { // E/e
-            cout << "Done!" << endl;
-            break;
+            if(currentlySelecting == 0) {
+                printInstructions();
+                cin >> input;
+            }
+            else break;
         } else if(input == "Q" || input == "q") {
             quitGame = true;
             break;
@@ -359,27 +399,21 @@ int main() {
         printMainMenu(currentlySelecting);
         cin >> input;
     }
+
+
     if(quitGame) {
         cout << "Thanks for playing!" << endl;
         return 0;
     }
     srand(time(0));
 
-    if(true) { // New game or Load game
-        //gameStartType == 1 || gameStartType == 2
+    if(currentlySelecting == 1 || currentlySelecting == 2 || currentlySelecting == 3) { // New game or Load game
         cout << bCyan << "Starting game..." << white << endl;
         // sleep(1);
-        
-        // Use selected difficulty from intro
-        string difficulty = (currentlySelecting == 1) ? "easy" : "hard";
-        //selectedDifficulty == EASY
-
-        currentMap = (difficulty=="easy") ? easyBaseMapTemplate : hardBaseMapTemplate;
-        numPackages = (difficulty=="easy") ? 2 : 5;
-        
         Player *p = new Player();
         p->inventory = {};
         p->moveCount = 0;
+        string difficulty = (currentlySelecting == 1) ? "easy" : "hard";
 
          // If loading saved game
         if(currentlySelecting == 3) {
@@ -393,7 +427,9 @@ int main() {
                 cout << bGreen << "Game loaded successfully!" << white << endl;
             }
         } else {
-            // Else start new game
+            currentMap = (difficulty=="easy") ? easyBaseMapTemplate : hardBaseMapTemplate;
+            numPackages = (difficulty=="easy") ? 2 : 5;
+            
             cout << bCyan << "Starting new game..." << white << endl;
             placeItemsRandomly(p);
             int minSteps = shortestDelivery(p);
