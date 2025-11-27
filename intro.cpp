@@ -17,6 +17,7 @@
 using namespace std;
 
 // Global variable definitions
+extern string bGreen, bRed, bYellow, bBlue, bMagenta, bCyan, white;
 int input;
 GameState currentState = MAIN_MENU;
 int menuSelection = 0;
@@ -24,14 +25,6 @@ int difficultySelection = 0;
 Difficulty selectedDifficulty = EASY;
 bool saveFileExists = false;
 string saveFileName = "game_save.txt";  // Same name as in saveprogress.cpp
-
-string bGreen = "\033[1;32m";
-string bRed = "\033[1;31m";
-string bYellow = "\033[1;33m";
-string bBlue = "\033[1;34m";
-string bMagenta = "\033[1;35m";
-string bCyan = "\033[1;36m";
-string white = "\033[0m";
 
 // Game rules text
 vector<string> gameRules = {

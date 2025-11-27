@@ -3,7 +3,7 @@
 #include <iomanip>
 using namespace std;
 
-// 颜色代码
+// colour code
 #define RESET   "\033[0m"
 #define RED     "\033[31m"
 #define GREEN   "\033[32m"
@@ -17,13 +17,13 @@ void showEndScreen(bool winGame, int moveCount, int stepLimits,
                   int packagesDelivered, int totalPackages) {
     cout << "\033[2J\033[1;1H"; 
     
-    // 计算分数和效率
+    // calculating score and efficiency
     int movesRemaining = stepLimits - moveCount;
     double efficiency = (moveCount > 0) ? (double)packagesDelivered / moveCount * 100 : 0;
     int completionRate = (totalPackages > 0) ? (packagesDelivered * 100 / totalPackages) : 0;
     
     if (winGame) {
-        // 胜利界面 - 金色主题
+        // winning
         cout << BOLD << YELLOW;
         cout << "╔══════════════════════════════════════════════════╗" << endl;
         cout << "║              🎉 VICTORY CELEBRATION 🎉           ║" << endl;
@@ -31,7 +31,7 @@ void showEndScreen(bool winGame, int moveCount, int stepLimits,
         cout << YELLOW << "║  " << RESET << BOLD << GREEN << "CONGRATULATIONS! YOU'RE AN ELITE COURIER!" << YELLOW << "       ║" << RESET << endl;
         cout << YELLOW << "║                                                  ║" << RESET << endl;
         
-        // 使用setw来对齐文本
+        // make the text align
         cout << YELLOW << "║  " << RESET << "📦 " << "Packages Delivered: " 
              << BOLD << GREEN << setw(2) << packagesDelivered << "/" << setw(1) << totalPackages 
              << RESET << YELLOW << "                     ║" << RESET << endl;
@@ -45,7 +45,7 @@ void showEndScreen(bool winGame, int moveCount, int stepLimits,
              << RESET << YELLOW << "                          ║" << RESET << endl;
              
         cout << YELLOW << "║  " << RESET << "📊 " << "Delivery Efficiency: " 
-             << BOLD << MAGENTA << setw(2) << fixed << setprecision(1) << efficiency << "%" 
+             << BOLD << MAGENTA << setw(3) << fixed << setprecision(1) << efficiency << "%" 
              << RESET << YELLOW << "                   ║" << RESET << endl;
         
         cout << YELLOW << "║                                                  ║" << RESET << endl;
@@ -61,7 +61,7 @@ void showEndScreen(bool winGame, int moveCount, int stepLimits,
         cout << YELLOW << "╚══════════════════════════════════════════════════╝" << RESET << endl;
         
     } else {
-        // 失败界面 - 红色主题
+        // losing
         cout << BOLD << RED;
         cout << "╔══════════════════════════════════════════════════╗" << endl;
         cout << "║               💀 MISSION FAILED 💀               ║" << endl;
@@ -77,7 +77,6 @@ void showEndScreen(bool winGame, int moveCount, int stepLimits,
         
         cout << RED << "║                                                  ║" << RESET << endl;
         
-        // 使用setw对齐所有数据
         cout << RED << "║  " << RESET << "📦 " << "Packages Delivered: " 
              << BOLD << YELLOW << setw(2) << packagesDelivered << "/" << setw(1) << totalPackages 
              << RESET << RED << "                     ║" << RESET << endl;
@@ -87,8 +86,8 @@ void showEndScreen(bool winGame, int moveCount, int stepLimits,
              << RESET << RED << "                            ║" << RESET << endl;
              
         cout << RED << "║  " << RESET << "🎯 " << "Completion Rate: " 
-             << BOLD << YELLOW << setw(2) << completionRate << "%" 
-             << RESET << RED << "                         ║" << RESET << endl;
+             << BOLD << YELLOW << setw(3) << completionRate << "%" 
+             << RESET << RED << "                        ║" << RESET << endl;
         
         cout << RED << "║                                                  ║" << RESET << endl;
         cout << RED << "║  " << RESET << BOLD << CYAN << "Don't give up! Better luck next time!" << RED << "           ║" << RESET << endl;

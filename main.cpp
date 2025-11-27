@@ -43,6 +43,16 @@
 
 using namespace std;
 
+// Color definitions
+string bGreen = "\033[1;32m";
+string bRed = "\033[1;31m";
+string bYellow = "\033[1;33m";
+string bBlue = "\033[1;34m";
+string bMagenta = "\033[1;35m";
+string bCyan = "\033[1;36m";
+string white = "\033[0m";
+string brown = "\033[38;5;94m";
+
 bool winGame = false;
 int moveCount =0;
 int stepLimits =0;
@@ -115,10 +125,11 @@ void placeItemsRandomly(Player *&p) {
     }
 }
 
-// Display map and item info
 void displayMapInfo(Player *&p) {
     cout << "\033[2J\033[1;1H";
-    cout << "Controls: W/A/S/D to move, V to save, Q to quit" << endl;
+    cout << bCyan << "Controls: " << bYellow << "W/A/S/D" << white << " to move, " 
+         << bBlue << "V" << white << " to save, " << bRed << "Q" << white << " to quit" << endl;
+    
     for(int i = 0; i < currentMap.size(); i++) {
         for(int j = 0; j < currentMap[i].size(); j++) {
             pair<int, int> loc = {i, j};
@@ -129,10 +140,16 @@ void displayMapInfo(Player *&p) {
                     break;
                 }
             }
-            if(loc == p->loc) cout << "P ";
-            else if(loc == customerLoc) cout << "C ";
-            else if(isPackage) cout << "1 ";
-            else cout << currentMap[i][j] << " ";
+            if(loc == p->loc) 
+                cout << bGreen << "P " << white;
+            else if(loc == customerLoc) 
+                cout << bCyan << "C " << white;
+            else if(isPackage) 
+                cout << bYellow << "1 " << white;
+            else if(currentMap[i][j] == "#")
+                cout << brown << "# " << white;
+            else 
+                cout << currentMap[i][j] << " ";
         }
         cout << endl;
     }
@@ -244,7 +261,7 @@ void pickupPackageFromMap(Player *&p) {
         if(packLoc == p->loc) {
             p->inventory.push_back(to_string(i+1));
             packageLocs.erase(packageLocs.begin()+i);
-            cout << "Picked up package " << (i+1) << "!" << endl;
+            cout << bGreen << "Picked up package " << (i+1) << "!" << white << endl;
             break;
         }
     }
@@ -257,7 +274,7 @@ int main() {
     srand(time(0));
 
     if(gameStartType == 1 || gameStartType == 2) { // New game or Load game
-        cout << "Starting game..." << endl;
+        cout << bCyan << "Starting game..." << white << endl;
         sleep(1);
         
         // Use selected difficulty from intro
@@ -272,18 +289,18 @@ int main() {
 
          // If loading saved game
         if(gameStartType == 2) {
-            cout << "Loading saved game..." << endl;
+            cout << bCyan << "Loading saved game..." << white << endl;
             if(!loadGameProgress(p, packageLocs, customerLoc, moveCount, stepLimits, numPackages, difficulty)) {
-                cout << "Failed to load game. Starting new game." << endl;
+                cout << bRed << "Failed to load game. Starting new game." << white << endl;
                 placeItemsRandomly(p);
                 int minSteps = shortestDelivery(p);
                 stepLimits = (difficulty=="easy") ? minSteps*2 : minSteps+2;
             } else {
-                cout << "Game loaded successfully!" << endl;
+                cout << bGreen << "Game loaded successfully!" << white << endl;
             }
         } else {
             // Else start new game
-            cout << "Starting new game..." << endl;
+            cout << bCyan << "Starting new game..." << white << endl;
             placeItemsRandomly(p);
             int minSteps = shortestDelivery(p);
             stepLimits = (difficulty=="easy") ? minSteps*2 : minSteps+2;
@@ -294,22 +311,43 @@ int main() {
 
         while(choice != "q" && choice != "Q") {
             displayMapInfo(p);
-            cout << "==========================================" << endl;
-            cout << "Move count: " << moveCount << " / " << stepLimits << endl;
-            cout << "Packages remaining: " << packageLocs.size() << " / " << numPackages << endl;
+            cout << bBlue << "==========================================" << white << endl;
+            
+            // Move count with color coding based on remaining moves
+            int remainingMoves = stepLimits - moveCount;
+            string moveColor = (remainingMoves > stepLimits * 0.3) ? bGreen : 
+                              (remainingMoves > stepLimits * 0.1) ? bYellow : bRed;
+            
+            cout << "Move count: " << moveColor << moveCount << white << " / " << stepLimits << endl;
+            
+            // Packages remaining with color
+            cout << "Packages remaining: ";
+            if(packageLocs.size() == 0) 
+                cout << bGreen << packageLocs.size() << white;
+            else 
+                cout << bYellow << packageLocs.size() << white;
+            cout << " / " << numPackages << endl;
+            
+            // Player inventory
             cout << "Player inventory: { ";
-            for(size_t i = 0; i < p->inventory.size(); i++) 
-                cout << "| Package " << p->inventory[i] << " | ";
-            cout << "}" << endl;
+            if(p->inventory.empty()) {
+                cout << bRed << "Empty" << white;
+            } else {
+                for(size_t i = 0; i < p->inventory.size(); i++) 
+                    cout << bYellow << "| Package " << p->inventory[i] << " | " << white;
+            }
+            cout << " }" << endl;
             
             if(deliveringPackage) {
-                cout << "🎉 Successfully delivered " << numDeliveredPackages << " package(s) to customer!" << endl;
+                cout << bGreen << "Successfully delivered " << numDeliveredPackages << " package(s) to customer!" << white << endl;
                 numDeliveredPackages = -1;
                 deliveringPackage = false;
             }
             
-            cout << "==========================================" << endl;
-            cout << "Enter move (W/A/S/D), V to save, Q to quit: ";
+            cout << bBlue << "==========================================" << white << endl;
+            cout << "Enter move (" << bYellow << "W/A/S/D" << white << "), " 
+                 << bBlue << "V" << white << " to save, " 
+                 << bRed << "Q" << white << " to quit: ";
 
             cin >> choice;
 
@@ -318,9 +356,9 @@ int main() {
             // saving function
             if(choice == "V" || choice == "v") {
                 if(saveGameProgress(p, packageLocs, customerLoc, moveCount, stepLimits, numPackages, difficulty)) {
-                    cout << "💾 Game saved successfully!" << endl;
+                    cout << bGreen << "Game saved successfully!" << white << endl;
                 } else {
-                    cout << "❌ Failed to save game!" << endl;
+                    cout << bRed << "Failed to save game!" << white << endl;
                 }
                 sleep(1);
                 continue;
@@ -346,18 +384,18 @@ int main() {
                     }
                     
                 } else {
-                    cout << "❌ Not a valid move. You hit a wall!" << endl;
+                    cout << bRed << "Not a valid move. You hit a wall!" << white << endl;
                     sleep(1);
                 }
 
             } else {
-                cout << "❌ Not a valid key. Use W/A/S/D to move." << endl;
+                cout << bRed << "Not a valid key. Use W/A/S/D to move." << white << endl;
                 sleep(1);
             }
             
             // Check loss condition (out of moves)
             if(moveCount > stepLimits) {
-                cout << "⏰ You ran out of moves!" << endl;
+                cout << bRed << "You ran out of moves!" << white << endl;
                 sleep(1);
                 break;
             }
@@ -368,17 +406,17 @@ int main() {
         showEndScreen(winGame, moveCount, stepLimits, packagesDelivered, numPackages);
 
     // Delete save file when the game ends
-        cout << "Clearing save data..." << endl;
+        cout << bCyan << "Clearing save data..." << white << endl;
         remove("game_save.txt");
-        cout << "Save file deleted successfully." << endl;
+        cout << bGreen << "Save file deleted successfully." << white << endl;
 
         delete p;
         
         //  Exit message before quitting the game
-        cout << "Exiting the game..." << endl;
+        cout << bCyan << "Exiting the game..." << white << endl;
         sleep(2);
     }
 
-    cout << "Thank you for playing!" << endl;
+    cout << bYellow << "Thank you for playing!" << white << endl;
     return 0;
 }
