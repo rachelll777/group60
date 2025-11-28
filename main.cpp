@@ -370,10 +370,7 @@ void printInstructions() {
 
 
 int main() {
-    // Load intro menu
     
-    
-
     int currentlySelecting = 0; //1 for instruct, 2 for new game, 3 for continue game
 
     printMainMenu(currentlySelecting);
@@ -399,7 +396,8 @@ int main() {
         cin >> input;
     }
 
-
+    if(input == "Q" || input == "q") quitGame = true;
+    
     if(quitGame) {
         cout << "Thanks for playing!" << endl;
         return 0;
