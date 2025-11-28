@@ -7,7 +7,7 @@
 
 bool saveGameProgress(Player* p, const std::vector<std::pair<int, int>>& packageLocs, 
                      const std::pair<int, int>& customerLoc, int moveCount, 
-                     int stepLimits, int numPackages, const std::string& difficulty);  // 添加 const
+                     int stepLimits, int numPackages, const std::string& difficulty); 
 
 bool loadGameProgress(Player*& p, std::vector<std::pair<int, int>>& packageLocs, 
                      std::pair<int, int>& customerLoc, int& moveCount, 
