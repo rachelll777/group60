@@ -13,7 +13,7 @@ bool saveGameProgress(Player* p, const vector<pair<int, int> >& packageLocs,
                      const pair<int, int>& customerLoc, int moveCount, 
                      int stepLimits, int numPackages, const string& difficulty, const vector<vector<string>>& currentMap) {  
 
-    string filename = "d:\\AAAdelivery_game\\game_save.txt";
+    string filename = "d:\\delivery_game\\game_save.txt";
     
     // delete previously saved file
     remove(filename.c_str());
