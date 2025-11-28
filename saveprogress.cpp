@@ -15,7 +15,7 @@ bool saveGameProgress(Player* p, const vector<pair<int, int> >& packageLocs,
 
     string filename = "./game_save.txt";
     
-    // delete previously saved file
+    // Delete previously saved file
     remove(filename.c_str());
 
     ofstream saveFile(filename);
@@ -24,7 +24,6 @@ bool saveGameProgress(Player* p, const vector<pair<int, int> >& packageLocs,
         return false;
     }
     
-    // 添加调试信息
     cout << "DEBUG: Starting save process..." << endl;
     cout << "DEBUG: Map size: " << currentMap.size() << "x" 
          << (currentMap.empty() ? 0 : currentMap[0].size()) << endl;
@@ -51,7 +50,7 @@ bool saveGameProgress(Player* p, const vector<pair<int, int> >& packageLocs,
         saveFile << loc.first << " " << loc.second << endl;
     }
 
-    // 确保地图数据被保存 - 添加详细调试
+    // Ensure saving of map data
     cout << "DEBUG: Saving map data now..." << endl;
     if (currentMap.empty()) {
         cout << "ERROR: Current map is empty!" << endl;
@@ -61,13 +60,13 @@ bool saveGameProgress(Player* p, const vector<pair<int, int> >& packageLocs,
     
     cout << "DEBUG: Map dimensions: " << currentMap.size() << "x" << currentMap[0].size() << endl;
     
-    // 保存地图尺寸
+    // Save map size
     saveFile << currentMap.size() << " " << currentMap[0].size() << endl;
     
-    // 保存地图内容
+    // Save map content
     for (int i = 0; i < currentMap.size(); i++) {
         for (int j = 0; j < currentMap[i].size(); j++) {
-            // 处理空格字符 - 如果是空格就保存为"_"，避免加载时解析问题
+            //Dealing with blank space
             if (currentMap[i][j] == " ") {
                 saveFile << "_ ";
             } else {
@@ -76,7 +75,7 @@ bool saveGameProgress(Player* p, const vector<pair<int, int> >& packageLocs,
         }
         saveFile << endl;
         
-        // 调试输出前几行
+        // Try output
         if (i < 2) {
             cout << "DEBUG: Saved row " << i << endl;
         }
@@ -84,7 +83,7 @@ bool saveGameProgress(Player* p, const vector<pair<int, int> >& packageLocs,
     
     saveFile.close();
     
-    // 验证保存结果
+    // Testing the content saved
     ifstream checkFile(filename);
     if (checkFile.is_open()) {
         string line;
@@ -135,7 +134,7 @@ bool loadGameProgress(Player*& p, vector<pair<int, int> >& packageLocs,
     p->inventory.clear();
     int inventorySize;
     saveFile >> inventorySize;
-    saveFile.ignore(); // 跳过换行符
+    saveFile.ignore(); 
     for (int i = 0; i < inventorySize; i++) {
         string item;
         getline(saveFile, item);
@@ -152,13 +151,13 @@ bool loadGameProgress(Player*& p, vector<pair<int, int> >& packageLocs,
         packageLocs.push_back({x, y});
     }
     
-    // 加载地图数据
+    // Load map data
     int rows, cols;
     saveFile >> rows >> cols;
     cout << "DEBUG: Loading map of size " << rows << "x" << cols << endl;
     
     currentMap.clear();
-    saveFile.ignore(); // 跳过换行符
+    saveFile.ignore(); 
     
     for (int i = 0; i < rows; i++) {
         string line;
@@ -167,12 +166,11 @@ bool loadGameProgress(Player*& p, vector<pair<int, int> >& packageLocs,
         vector<string> row;
         string cell;
         
-        // 解析空格分隔的单元格
         for (size_t j = 0; j < line.length(); j++) {
             char c = line[j];
             if (c == ' ') {
                 if (!cell.empty()) {
-                    // 将"_"转换回空格
+                    // Transfer to blank space
                     if (cell == "_") {
                         row.push_back(" ");
                     } else {
@@ -185,7 +183,6 @@ bool loadGameProgress(Player*& p, vector<pair<int, int> >& packageLocs,
             }
         }
         
-        // 处理最后一个单元格
         if (!cell.empty()) {
             if (cell == "_") {
                 row.push_back(" ");
@@ -194,7 +191,7 @@ bool loadGameProgress(Player*& p, vector<pair<int, int> >& packageLocs,
             }
         }
         
-        // 验证列数是否正确
+        // Testing the correct number of rows
         if (row.size() != cols) {
             cout << "WARNING: Row " << i << " has " << row.size() 
                  << " columns, expected " << cols << endl;
