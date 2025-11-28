@@ -26,7 +26,7 @@
 --------------------------
 ## Instructions 🗺️
 1. **Start the Game:**
-   - Use **`W/S`**to navigate, Use **`E`** to confirm and enter.
+   - Use **`W/S`** to navigate, Use **`E`** to confirm and enter.
    - **Game Instruction**: You can view the game rules there.
    - Launch the game and choose your difficulty level
       - **`Easy`**: Small Map and Less Packages. Step limit is `double the shortest distance` player can explore and practice more.
@@ -67,6 +67,7 @@
    ./delivery_game
 --------------------------
 # **🎉Happy Gaming 🎉**
+
 
 
 
