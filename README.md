@@ -26,12 +26,13 @@
 --------------------------
 ## Instructions 🗺️
 1. **Start the Game:**
+   - Use **`W/S`**to navigate, Use**`E`** to confirm and enter.
+   - **Game Instruction**: You can view the game rules there.
    - Launch the game and choose your difficulty level
-      - **Easy**: Small Map and Less Packages. Step limit is `double the shortest distance` player can explore and practice more.
-      - **Hard**: Large Map and More Packages. Step limit is `the shortest distance+1`, be careful!
-   - Use **`E`** to confirm and enter the game.
+      - **`Easy`**: Small Map and Less Packages. Step limit is `double the shortest distance` player can explore and practice more.
+      - **`Hard`**: Large Map and More Packages. Step limit is `the shortest distance+1`, be careful!
    
-2. **Controls:**
+3. **Controls:**
    - Use the following keys to control your character:
       - **`W`**: Move up
       - **`A`**: Move left
@@ -39,11 +40,15 @@
       - **`D`**: Move right
       - **`Q`**: Quit the game without saving
       - **`V`**: Save the game then Quit
-     - Important: The package is **automatically picked up and delivered** when the player passed package and customer respectively.
+      - Important: The package is **automatically picked up and delivered** when the player passed package and customer respectively.
 
-3. **Completion and Scoring:**
+4. **Completion and Scoring:**
    - **Win**: Player delivered all Packages within step limits. The Success Page also show player's efficiency. 
    - **Lose**: Player is unabled to delivered all Packages within step limits. Or player quit the game without saving.
+
+5. **To Continue the Saved Game:**
+   - **`Continue`**: You can continue play the saved game on menu! The status of the game will always be the newest game version you saved.
+   - **To Practice**: You can always play the saved game even you failed, as long as you don't save a new one.
 
 --------------------------
 ## Non-Standard Libraries 📖
@@ -57,11 +62,9 @@
 2. Compile the game using the make command:
    ```bash
    make
-3. If you don't have make, manually compile the game with the following command:
+3. Run the game:
    ```bash
-   g++ main.cpp player.cpp saveprogress.cpp end1.cpp -o delivery_game.exe
-4. Run the game:
-   ```bash
-   ./delivery_game.exe
+   ./delivery_game
 --------------------------
 # **🎉Happy Gaming 🎉**
+
