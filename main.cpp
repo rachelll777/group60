@@ -439,7 +439,7 @@ int main() {
             numPackages = (difficulty=="easy") ? 2 : 5;
             
             cout << bCyan << "Starting new game..." << white << endl;
-            remove("game_save.txt");
+            remove("./game_save.txt");
             placeItemsRandomly(p);
             int minSteps = shortestDelivery(p);
             stepLimits = (difficulty=="easy") ? minSteps*2 : minSteps+2;
