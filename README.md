@@ -21,7 +21,7 @@
 3. **Dynamic memory management**: The Player object is dynamically allocated using new and deallocated with delete at the end of the game session(dynamic array). Our code used vectors and pointers as well. 
 4. **File input/output**: The saveprogress file enables saving and loading of game progress.
 5. **Multiple files**: The codebase is organized across multiple header and implementation files (main.cpp, intro.cpp, end1.cpp, saveprogress.cpp)
-6. **Multiple difficulty levels**: `Easy mode`: 10x10 map, 2 packages, `Hard mode`: 17 times 17 map, 5 packages
+6. **Multiple difficulty levels**: `Easy mode`: 10x10 map, 2 packages, `Hard mode`: 17x17 map, 5 packages
 
 --------------------------
 ## Instructions 🗺️
