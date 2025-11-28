@@ -11,8 +11,8 @@ using namespace std;
 // Saves the current game state into a file for future loading
 bool saveGameProgress(Player* p, const vector<pair<int, int> >& packageLocs, 
                      const pair<int, int>& customerLoc, int moveCount, 
-                     int stepLimits, int numPackages, string& difficulty) {
-    
+                     int stepLimits, int numPackages, const string& difficulty) {  
+                        
     string filename = "game_save.txt";
     
     // delete previously saved file
@@ -68,8 +68,7 @@ bool loadGameProgress(Player*& p, vector<pair<int, int> >& packageLocs,
     int playerX, playerY;
     saveFile >> playerX;
     saveFile >> playerY;
-    pair<int, int> playerLoc = {playerX, playerY};
-    p->loc = playerLoc;
+    p->loc = {playerX, playerY};
     
     // Load move-related information
     saveFile >> moveCount;
@@ -80,8 +79,7 @@ bool loadGameProgress(Player*& p, vector<pair<int, int> >& packageLocs,
     int custX, custY;
     saveFile >> custX;
     saveFile >> custY;
-    pair<int, int> custLoc = {custX, custY};
-    customerLoc = custLoc;
+    customerLoc = {custX, custY};
     
    // Load player inventory
     p->inventory.clear();
@@ -100,8 +98,7 @@ bool loadGameProgress(Player*& p, vector<pair<int, int> >& packageLocs,
     for (int i = 0; i < packageCount; i++) {
         int x, y;
         saveFile >> x >> y;
-        pair<int, int> tempLoc = {x, y};
-        packageLocs.push_back(tempLoc);
+        packageLocs.push_back({x, y});
     }
     
     saveFile.close();
