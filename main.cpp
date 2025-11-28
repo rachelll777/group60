@@ -362,7 +362,6 @@ void printInstructions() {
     for(string line : gameRules) cout << line;
     cout << empty;
     cout << bCyan + "┃" + white + "              Press " + bRed + "Q" + white + " to return to Main Menu            " + bCyan + "┃\n" + white;
-    cout << "Press Enter to go back to menu" << endl;
     cout << empty;
     cout << bottom;
 }
@@ -431,6 +430,7 @@ int main() {
             numPackages = (difficulty=="easy") ? 2 : 5;
             
             cout << bCyan << "Starting new game..." << white << endl;
+            remove("game_save.txt");
             placeItemsRandomly(p);
             int minSteps = shortestDelivery(p);
             stepLimits = (difficulty=="easy") ? minSteps*2 : minSteps+2;
@@ -491,6 +491,7 @@ int main() {
                     cout << bRed << "Failed to save game!" << white << endl;
                 }
                 // sleep(1);
+                displayMapInfo(p);
                 continue;
             }
             

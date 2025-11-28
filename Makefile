@@ -4,16 +4,16 @@ CXXFLAGS = -std=c++11 -Wall -Wextra -O2
 LDFLAGS = 
 
 # Target executable
-TARGET = game
+TARGET = delivery_game
 
 # Source files
-SRCS = main.cpp intro.cpp end1.cpp saveprogress.cpp player.cpp
+SRCS = main.cpp end1.cpp saveprogress.cpp player.cpp
 
 # Object files
 OBJS = $(SRCS:.cpp=.o)
 
 # Header files
-HEADERS = player.h intro.h end1.h saveprogress.h
+HEADERS = player.h end1.h saveprogress.h
 
 # Default target
 all: $(TARGET)

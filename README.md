@@ -42,10 +42,17 @@ https
 --------------------------
 ### Compilation:
 1. Navigate to the project directory
-2. Compile using the make command: make
+```bash
+   cd /path/to/group60
+2. Compile using the make command: 
+```bash
+`make`
 3. If you don't have make, manually compile using the command:
-g++ main.cpp intro.cpp player.cpp saveprogress.cpp end1.cpp -o delivery_game.exe
-4. Execution: ./delivery_game.exe
+```bash
+`g++ main.cpp player.cpp saveprogress.cpp end1.cpp -o delivery_game.exe`
+4. Execution: 
+```bash
+`./delivery_game.exe`
 
 
 
