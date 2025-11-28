@@ -26,36 +26,36 @@ void showEndScreen(bool winGame, int moveCount, int stepLimits,
         // winning
         cout << BOLD << YELLOW;
         cout << "╔══════════════════════════════════════════════════╗" << endl;
-        cout << "║              🎉 VICTORY CELEBRATION 🎉           ║" << endl;
+        cout << "║            *** VICTORY CELEBRATION ***           ║" << endl;
         cout << "╠══════════════════════════════════════════════════╣" << RESET << endl;
         cout << YELLOW << "║  " << RESET << BOLD << GREEN << "CONGRATULATIONS! YOU'RE AN ELITE COURIER!" << YELLOW << "       ║" << RESET << endl;
         cout << YELLOW << "║                                                  ║" << RESET << endl;
         
         // make the text align
-        cout << YELLOW << "║  " << RESET << "📦 " << "Packages Delivered: " 
+        cout << YELLOW << "║  " << RESET << "[P] " << "Packages Delivered: " 
              << BOLD << GREEN << setw(2) << packagesDelivered << "/" << setw(1) << totalPackages 
-             << RESET << YELLOW << "                     ║" << RESET << endl;
+             << RESET << YELLOW << "                    ║" << RESET << endl;
              
-        cout << YELLOW << "║  " << RESET << "👣 " << "Moves Used: " 
+        cout << YELLOW << "║  " << RESET << "[M] " << "Moves Used: " 
              << BOLD << CYAN << setw(2) << moveCount << "/" << setw(2) << stepLimits 
-             << RESET << YELLOW << "                            ║" << RESET << endl;
+             << RESET << YELLOW << "                           ║" << RESET << endl;
              
-        cout << YELLOW << "║  " << RESET << "⭐ " << "Moves Remaining: " 
+        cout << YELLOW << "║  " << RESET << "[*] " << "Moves Remaining: " 
              << BOLD << GREEN << setw(2) << movesRemaining 
-             << RESET << YELLOW << "                          ║" << RESET << endl;
+             << RESET << YELLOW << "                         ║" << RESET << endl;
              
-        cout << YELLOW << "║  " << RESET << "📊 " << "Delivery Efficiency: " 
+        cout << YELLOW << "║  " << RESET << "[%] " << "Delivery Efficiency: " 
              << BOLD << MAGENTA << setw(3) << fixed << setprecision(1) << efficiency << "%" 
-             << RESET << YELLOW << "                   ║" << RESET << endl;
+             << RESET << YELLOW << "                  ║" << RESET << endl;
         
         cout << YELLOW << "║                                                  ║" << RESET << endl;
         
         if(efficiency > 80) {
-            cout << YELLOW << "║  " << BOLD << "🏆 EXCEPTIONAL PERFORMANCE! MASTER COURIER!" << YELLOW << "   ║" << RESET << endl;
+            cout << YELLOW << "║  " << BOLD << "[#] EXCEPTIONAL PERFORMANCE! MASTER COURIER!" << YELLOW << "   ║" << RESET << endl;
         } else if(efficiency > 60) {
-            cout << YELLOW << "║  " << BOLD << "🥈 GREAT JOB! PROFESSIONAL DELIVERY!" << YELLOW << "       ║" << RESET << endl;
+            cout << YELLOW << "║  " << BOLD << "[+] GREAT JOB! PROFESSIONAL DELIVERY!" << YELLOW << "       ║" << RESET << endl;
         } else {
-            cout << YELLOW << "║  " << BOLD << "🥉 MISSION ACCOMPLISHED! GOOD WORK!" << YELLOW << "             ║" << RESET << endl;
+            cout << YELLOW << "║  " << BOLD << "[=] MISSION ACCOMPLISHED! GOOD WORK!" << YELLOW << "            ║" << RESET << endl;
         }
         
         cout << YELLOW << "╚══════════════════════════════════════════════════╝" << RESET << endl;
@@ -64,30 +64,30 @@ void showEndScreen(bool winGame, int moveCount, int stepLimits,
         // losing
         cout << BOLD << RED;
         cout << "╔══════════════════════════════════════════════════╗" << endl;
-        cout << "║               💀 MISSION FAILED 💀               ║" << endl;
+        cout << "║              XXX MISSION FAILED XXX              ║" << endl;
         cout << "╠══════════════════════════════════════════════════╣" << RESET << endl;
         cout << RED << "║  " << RESET << BOLD << RED << "DELIVERY SERVICE TERMINATED - TRY AGAIN!" << RED << "        ║" << RESET << endl;
         cout << RED << "║                                                  ║" << RESET << endl;
         
         if (moveCount > stepLimits) {
-            cout << RED << "║  " << RESET << BOLD << "⏰ RAN OUT OF MOVES! TIME'S UP!" << RED << "                 ║" << RESET << endl;
+            cout << RED << "║  " << RESET << BOLD << "[!] RAN OUT OF MOVES! TIME'S UP!" << RED << "                ║" << RESET << endl;
         } else {
-            cout << RED << "║  " << RESET << BOLD << "🚪 MISSION ABORTED - EARLY EXIT" << RED << "                 ║" << RESET << endl;
+            cout << RED << "║  " << RESET << BOLD << "[X] MISSION ABORTED - EARLY EXIT" << RED << "                ║" << RESET << endl;
         }
         
         cout << RED << "║                                                  ║" << RESET << endl;
         
-        cout << RED << "║  " << RESET << "📦 " << "Packages Delivered: " 
+        cout << RED << "║  " << RESET << "[P] " << "Packages Delivered: " 
              << BOLD << YELLOW << setw(2) << packagesDelivered << "/" << setw(1) << totalPackages 
-             << RESET << RED << "                     ║" << RESET << endl;
+             << RESET << RED << "                    ║" << RESET << endl;
              
-        cout << RED << "║  " << RESET << "👣 " << "Moves Used: " 
+        cout << RED << "║  " << RESET << "[M] " << "Moves Used: " 
              << BOLD << CYAN << setw(2) << moveCount << "/" << setw(2) << stepLimits 
-             << RESET << RED << "                            ║" << RESET << endl;
+             << RESET << RED << "                           ║" << RESET << endl;
              
-        cout << RED << "║  " << RESET << "🎯 " << "Completion Rate: " 
+        cout << RED << "║  " << RESET << "[T] " << "Completion Rate: " 
              << BOLD << YELLOW << setw(3) << completionRate << "%" 
-             << RESET << RED << "                        ║" << RESET << endl;
+             << RESET << RED << "                       ║" << RESET << endl;
         
         cout << RED << "║                                                  ║" << RESET << endl;
         cout << RED << "║  " << RESET << BOLD << CYAN << "Don't give up! Better luck next time!" << RED << "           ║" << RESET << endl;

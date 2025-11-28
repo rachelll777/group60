@@ -11,20 +11,24 @@ using namespace std;
 // Saves the current game state into a file for future loading
 bool saveGameProgress(Player* p, const vector<pair<int, int> >& packageLocs, 
                      const pair<int, int>& customerLoc, int moveCount, 
-                     int stepLimits, int numPackages, const string& difficulty) {  
-                        
+                     int stepLimits, int numPackages, const string& difficulty, const vector<vector<string>>& currentMap) {  
+
     string filename = "game_save.txt";
     
     // delete previously saved file
     remove(filename.c_str());
 
-    ofstream saveFile("game_save.txt");
+    ofstream saveFile(filename);
     if (!saveFile.is_open()) {
         cout << "Error: Cannot create save file!" << endl;
         return false;
     }
     
-    // Save basic information - variable names are consistent with main.cpp
+    cout << "DEBUG: Starting save process..." << endl;
+    cout << "DEBUG: Map size: " << currentMap.size() << "x" 
+         << (currentMap.empty() ? 0 : currentMap[0].size()) << endl;
+    
+    // Save basic information
     saveFile << difficulty << endl;
     saveFile << p->loc.first << " " << p->loc.second << endl;
     saveFile << moveCount << endl;
@@ -45,23 +49,64 @@ bool saveGameProgress(Player* p, const vector<pair<int, int> >& packageLocs,
     for (const auto& loc : packageLocs) {
         saveFile << loc.first << " " << loc.second << endl;
     }
+
+    cout << "DEBUG: Saving map data now..." << endl;
+    if (currentMap.empty()) {
+        cout << "ERROR: Current map is empty!" << endl;
+        saveFile.close();
+        return false;
+    }
+    
+    cout << "DEBUG: Map dimensions: " << currentMap.size() << "x" << currentMap[0].size() << endl;
+    
+    // save map size
+    saveFile << currentMap.size() << " " << currentMap[0].size() << endl;
+    
+    // save map content
+    for (int i = 0; i < currentMap.size(); i++) {
+        for (int j = 0; j < currentMap[i].size(); j++) {
+            if (currentMap[i][j] == " ") {
+                saveFile << "_ ";
+            } else {
+                saveFile << currentMap[i][j] << " ";
+            }
+        }
+        saveFile << endl;
+        
+        if (i < 2) {
+            cout << "DEBUG: Saved row " << i << endl;
+        }
+    }
     
     saveFile.close();
+    
+    ifstream checkFile(filename);
+    if (checkFile.is_open()) {
+        string line;
+        int lineCount = 0;
+        while (getline(checkFile, line)) {
+            lineCount++;
+        }
+        checkFile.close();
+        cout << "DEBUG: Save file has " << lineCount << " lines" << endl;
+    }
+    
     cout << "Game progress saved successfully!" << endl;
     return true;
 }
 
 bool loadGameProgress(Player*& p, vector<pair<int, int> >& packageLocs, 
                      pair<int, int>& customerLoc, int& moveCount, 
-                     int& stepLimits, int& numPackages, string& difficulty) {
+                     int& stepLimits, int& numPackages, string& difficulty, vector<vector<string>>& currentMap) {
     
-    ifstream saveFile("game_save.txt");
+    string filename = "d:\\AAAdelivery_game\\game_save.txt";
+    ifstream saveFile(filename);
     if (!saveFile.is_open()) {
         cout << "No saved game found!" << endl;
         return false;
     }
     
-    // Load basic information - variable names are consistent with main.cpp
+    // Load basic information
     saveFile >> difficulty;
     
     // Load player position
@@ -81,13 +126,14 @@ bool loadGameProgress(Player*& p, vector<pair<int, int> >& packageLocs,
     saveFile >> custY;
     customerLoc = {custX, custY};
     
-   // Load player inventory
+    // Load player inventory
     p->inventory.clear();
     int inventorySize;
     saveFile >> inventorySize;
+    saveFile.ignore(); // 跳过换行符
     for (int i = 0; i < inventorySize; i++) {
         string item;
-        saveFile >> item;
+        getline(saveFile, item);
         p->inventory.push_back(item);
     }
     
@@ -101,7 +147,55 @@ bool loadGameProgress(Player*& p, vector<pair<int, int> >& packageLocs,
         packageLocs.push_back({x, y});
     }
     
+    int rows, cols;
+    saveFile >> rows >> cols;
+    cout << "DEBUG: Loading map of size " << rows << "x" << cols << endl;
+    
+    currentMap.clear();
+    saveFile.ignore(); 
+    
+    for (int i = 0; i < rows; i++) {
+        string line;
+        getline(saveFile, line);
+        
+        vector<string> row;
+        string cell;
+        
+        for (size_t j = 0; j < line.length(); j++) {
+            char c = line[j];
+            if (c == ' ') {
+                if (!cell.empty()) {
+                    if (cell == "_") {
+                        row.push_back(" ");
+                    } else {
+                        row.push_back(cell);
+                    }
+                    cell.clear();
+                }
+            } else {
+                cell += c;
+            }
+        }
+        
+        if (!cell.empty()) {
+            if (cell == "_") {
+                row.push_back(" ");
+            } else {
+                row.push_back(cell);
+            }
+        }
+        
+        if (row.size() != cols) {
+            cout << "WARNING: Row " << i << " has " << row.size() 
+                 << " columns, expected " << cols << endl;
+        }
+        
+        currentMap.push_back(row);
+    }
+
     saveFile.close();
+    cout << "DEBUG: Loaded map size: " << currentMap.size() << "x" 
+         << (currentMap.empty() ? 0 : currentMap[0].size()) << endl;
     cout << "Game loaded successfully!" << endl;
     return true;
 }

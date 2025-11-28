@@ -278,7 +278,7 @@ void printMainMenu(int selection) {
     string bottom = bBlue + "┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\n" + white;
     
     vector<string> title = {
-        bBlue + "┃" + white + "                " + bYellow + "Race Against the Clock!" + white + "                 " + bBlue + "┃\n" + white,
+        bBlue + "┃" + white + "                     " + bYellow + "Package Panic!" + white + "                     " + bBlue + "┃\n" + white,
         bBlue + "┃" + white + "    An excellent courier should deliver packages        " + bBlue + "┃\n" + white,
         bBlue + "┃" + white + "    quickly and safely! The customer is getting         " + bBlue + "┃\n" + white,
         bBlue + "┃" + white + "    impatient, find shortcuts to save steps!            " + bBlue + "┃\n" + white,
@@ -380,7 +380,7 @@ int main() {
     cin >> input;
 
     bool quitGame = false;
-    while(input != "Q" || input == "q") {
+    while(input != "Q" && input != "q") {
         if(input == "W" || input == "w") { //W/w
             currentlySelecting = (currentlySelecting-1+4)%4;
         } else if(input == "S" || input == "s") { // S/s
@@ -391,6 +391,19 @@ int main() {
                 cin >> input;
             }
             else break;
+        } else if(input == "1") {
+            currentlySelecting = 0;
+            printInstructions();
+            cin >> input;
+        } else if(input == "2") {
+            currentlySelecting = 1;
+            break;
+        } else if(input == "3") {
+            currentlySelecting = 2;
+            break;
+        } else if(input == "4") {
+            currentlySelecting = 3;
+            break;
         } else if(input == "Q" || input == "q") {
             quitGame = true;
             break;
@@ -417,7 +430,16 @@ int main() {
          // If loading saved game
         if(currentlySelecting == 3) {
             cout << bCyan << "Loading saved game..." << white << endl;
-            if(!loadGameProgress(p, packageLocs, customerLoc, moveCount, stepLimits, numPackages, difficulty)) {
+
+            if(difficulty == "easy") {
+                currentMap = easyBaseMapTemplate;
+                numPackages = 2;
+            } else {
+                currentMap = hardBaseMapTemplate;  
+                numPackages = 5;
+            }
+
+            if(!loadGameProgress(p, packageLocs, customerLoc, moveCount, stepLimits, numPackages, difficulty, currentMap)) {
                 cout << bRed << "Failed to load game. Starting new game." << white << endl;
                 placeItemsRandomly(p);
                 int minSteps = shortestDelivery(p);
@@ -485,7 +507,7 @@ int main() {
             
             // saving function
             if(choice == "V" || choice == "v") {
-                if(saveGameProgress(p, packageLocs, customerLoc, moveCount, stepLimits, numPackages, difficulty)) {
+                if(saveGameProgress(p, packageLocs, customerLoc, moveCount, stepLimits, numPackages, difficulty, currentMap)) {
                     cout << bGreen << "Game saved successfully!" << white << endl;
                 } else {
                     cout << bRed << "Failed to save game!" << white << endl;

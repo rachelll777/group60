@@ -1,16 +1,23 @@
-#ifndef PROGRESS_SAVING_H
-#define PROGRESS_SAVING_H
+#ifndef SAVEPROGRESS_H
+#define SAVEPROGRESS_H
 
 #include "player.h"
 #include <vector>
 #include <string>
+#include <utility>
+#include <fstream>
 
-bool saveGameProgress(Player* p, const std::vector<std::pair<int, int>>& packageLocs, 
-                     const std::pair<int, int>& customerLoc, int moveCount, 
-                     int stepLimits, int numPackages, const std::string& difficulty); 
+using namespace std;
 
-bool loadGameProgress(Player*& p, std::vector<std::pair<int, int>>& packageLocs, 
-                     std::pair<int, int>& customerLoc, int& moveCount, 
-                     int& stepLimits, int& numPackages, std::string& difficulty);
+
+bool saveGameProgress(Player* p, const vector<pair<int, int>>& packageLocs, 
+                     const pair<int, int>& customerLoc, int moveCount, 
+                     int stepLimits, int numPackages, const string& difficulty,
+                     const vector<vector<string>>& currentMap);
+
+bool loadGameProgress(Player*& p, vector<pair<int, int>>& packageLocs, 
+                     pair<int, int>& customerLoc, int& moveCount, 
+                     int& stepLimits, int& numPackages, string& difficulty,
+                     vector<vector<string>>& currentMap);
 
 #endif

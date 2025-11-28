@@ -43,7 +43,7 @@ struct Player {
 
     // display current inventory
     void displayInv(){
-        cout << "📦 Inventory: ";
+        cout << "?? Inventory: ";
         if (inventory.empty()){
             cout << "empty";}
         else{
