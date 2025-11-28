@@ -12,10 +12,10 @@
 
 
 ## Demostration vedio 📹
-https
+      https
+--------------------------
 
-
-## Implemented Features:
+## Implemented Features 🔍
 1. **Generation of random events**: The positions of the player, customer, and packages are randomly generated for a unique experience every time.
 2. **Data structures for storing data**: Vectors, pairs, and maps are utilised to store game state including player, customer and packages' locations, player's inventory, pathfinding solutions and step limitation.
 3. **Dynamic memory management**: The Player object is dynamically allocated using new and deallocated with delete at the end of the game session(dynamic array). Our code used vectors and pointers as well. 
@@ -24,40 +24,44 @@ https
 6. **Multiple difficulty levels**: `Easy mode`: 10x10 map, 2 packages, `Hard mode`: 17 times 17 map, 5 packages
 
 --------------------------
-## Instructions:
+## Instructions 🗺️
 1. **Start the Game:**
-   - Launch the game and choose your difficulty level (**Easy** or **Hard**).
+   - Launch the game and choose your difficulty level
+      - **Easy**: Small Map and Less Packages. Step limit is `double the shortest distance` player can explore and practice more.
+      - **Hard**: Large Map and More Packages. Step limit is `the shortest distance+1`, be careful!
+   - Use **`E`** to confirm and enter the game.
    
 2. **Controls:**
    - Use the following keys to control your character:
-     - **`A`**: Move left
-     - **`D`**: Move right
-     - **`W`**: Jump
-     - **`Q`**: Quit the game
-     - Important: In order to jump, you must hit **`W`** first, then hit **`A`** fast to jump leftwards (hit **`D`** fast to jump rightwards).
-       
+      - **`W`**: Move up
+      - **`A`**: Move left
+      - **`S`**: Move down
+      - **`D`**: Move right
+      - **`Q`**: Quit the game without saving
+      - **`V`**: Save the game then Quit
+     - Important: The package is **automatically picked up and delivered** when the player passed package and customer respectively.
 
 3. **Completion and Scoring:**
-   
+   - **Win**: Player delivered all Packages within step limits. The Success Page also show player's efficiency. 
+   - **Lose**: Player is unabled to delivered all Packages within step limits. Or player quit the game without saving.
+
 --------------------------
-### Compilation:
-1. Navigate to the project directory
-```bash
-   cd /path/to/group60
-2. Compile using the make command: 
-```bash
-`make`
-3. If you don't have make, manually compile using the command:
-```bash
-`g++ main.cpp player.cpp saveprogress.cpp end1.cpp -o delivery_game.exe`
-4. Execution: 
-```bash
-`./delivery_game.exe`
+## Non-Standard Libraries 📖
+   N/A
 
-
-
-
-
-
-
-
+--------------------------
+## Compilation 💻
+1. Open a terminal and navigate to the project's root directory:
+   ```bash
+   cd group60
+2. Compile the game using the make command:
+   ```bash
+   make
+3. If you don't have make, manually compile the game with the following command:
+   ```bash
+   g++ main.cpp player.cpp saveprogress.cpp end1.cpp -o delivery_game.exe
+4. Run the game:
+   ```bash
+   ./delivery_game.exe
+--------------------------
+# **🎉Happy Gaming 🎉**
