@@ -11,7 +11,7 @@
 > **Package Panic** is a fast-paced maze game where you become a delivery driver on a mission! Your goal is simple: **Collect** all the packages scattered in the maze and **Deliver** them to the customer. *The catch?* **Every time you play, the maze is different!** The game randomly generates the positions of `player`, `packages`, and `customer`. A smart algorithm calculates the shortest possible path for each unique layout, setting a tight and fair **move limit** for you to beat base on level difficulty. **Jump in and see if you have what it takes to be the fastest deliverer in town!**
 
 
-## Demostration vedio 📹
+## Demostration video 📹
       https
 --------------------------
 
