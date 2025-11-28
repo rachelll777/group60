@@ -30,7 +30,7 @@
    - **Game Instruction**: You can view the game rules there.
    - Launch the game and choose your difficulty level
       - **`Easy`**: Small Map and Less Packages. Step limit is `double the shortest distance` player can explore and practice more.
-      - **`Hard`**: Large Map and More Packages. Step limit is `the shortest distance+1`, be careful!
+      - **`Hard`**: Large Map and More Packages. Step limit is `the shortest distance+2`, be careful!
    
 3. **Controls:**
    - Use the following keys to control your character:
@@ -67,4 +67,5 @@
    ./delivery_game
 --------------------------
 # **🎉Happy Gaming 🎉**
+
 
