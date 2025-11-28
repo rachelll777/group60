@@ -278,7 +278,7 @@ void printMainMenu(int selection) {
     string bottom = bBlue + "┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\n" + white;
     
     vector<string> title = {
-        bBlue + "┃" + white + "                     " + bYellow + "Package Panic!" + white + "                     " + bBlue + "┃\n" + white,
+        bBlue + "┃" + white + "                " + bYellow + "     Package Panic     " + white + "                 " + bBlue + "┃\n" + white,
         bBlue + "┃" + white + "    An excellent courier should deliver packages        " + bBlue + "┃\n" + white,
         bBlue + "┃" + white + "    quickly and safely! The customer is getting         " + bBlue + "┃\n" + white,
         bBlue + "┃" + white + "    impatient, find shortcuts to save steps!            " + bBlue + "┃\n" + white,
@@ -391,19 +391,6 @@ int main() {
                 cin >> input;
             }
             else break;
-        } else if(input == "1") {
-            currentlySelecting = 0;
-            printInstructions();
-            cin >> input;
-        } else if(input == "2") {
-            currentlySelecting = 1;
-            break;
-        } else if(input == "3") {
-            currentlySelecting = 2;
-            break;
-        } else if(input == "4") {
-            currentlySelecting = 3;
-            break;
         } else if(input == "Q" || input == "q") {
             quitGame = true;
             break;
@@ -452,7 +439,7 @@ int main() {
             numPackages = (difficulty=="easy") ? 2 : 5;
             
             cout << bCyan << "Starting new game..." << white << endl;
-            remove("game_save.txt");
+            remove("d:\\AAAdelivery_game\\game_save.txt");
             placeItemsRandomly(p);
             int minSteps = shortestDelivery(p);
             stepLimits = (difficulty=="easy") ? minSteps*2 : minSteps+2;

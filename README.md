@@ -1,67 +1,521 @@
-# **Group60 Package Panic 📦**
-## Group Members:
-* Hu Xinyue-3036292556
-* Jia Qinhuan-3036457223
-* Wu Yuerong-3036440579
-* Zhang Linghui-3036292544
-* Zhou Zhixuan-3036445660
+# 送货游戏 (Delivery Game) - 用户手册
 
+## 游戏简介
+这是一个基于命令行的送货游戏。你需要在限定的步数内，收集所有包裹并送到客户手中。游戏支持简单和困难两种难度，并且可以随时保存和加载游戏进度。
 
-## Game Desciption 🚚
-> **Package Panic** is a fast-paced maze game where you become a delivery driver on a mission! Your goal is simple: **Collect** all the packages scattered in the maze and **Deliver** them to the customer. *The catch?* **Every time you play, the maze is different!** The game randomly generates the positions of `player`, `packages`, and `customer`. A smart algorithm calculates the shortest possible path for each unique layout, setting a tight and fair **move limit** for you to beat base on level difficulty. **Jump in and see if you have what it takes to be the fastest deliverer in town!**
+---
 
+## 系统要求
+- **操作系统**: Windows
+- **编译器**: Dev-C++ 或 MinGW (支持 C++11)
+- **终端**: 支持 ANSI 颜色代码的命令行终端
 
-## Demostration video 📹
-      https
---------------------------
+---
 
-## Implemented Features 🔍
-1. **Generation of random events**: The positions of the player, customer, and packages are randomly generated for a unique experience every time.
-2. **Data structures for storing data**: Vectors, pairs, and maps are utilised to store game state including player, customer and packages' locations, player's inventory, pathfinding solutions and step limitation.
-3. **Dynamic memory management**: The Player object is dynamically allocated using new and deallocated with delete at the end of the game session(dynamic array). Our code used vectors and pointers as well. 
-4. **File input/output**: The saveprogress file enables saving and loading of game progress.
-5. **Multiple files**: The codebase is organized across multiple header and implementation files。
-6. **Multiple difficulty levels**: `Easy mode`: 10x10 map, 2 packages, `Hard mode`: 17x17 map, 5 packages
+## 代码改动说明
 
---------------------------
-## Instructions 🗺️
-1. **Start the Game:**
-   - Launch the game and choose your difficulty level
-      - **Easy**: Small Map and Less Packages. Step limit is `double the shortest distance` player can explore and practice more.
-      - **Hard**: Large Map and More Packages. Step limit is `the shortest distance+1`, be careful!
-   - Use **`E`** to confirm and enter the game.
+本项目在开发过程中进行了以下重要修复和改进：
+
+### 修复1：游戏存档功能优化 (saveprogress.cpp)
+
+**问题描述**:
+- 保存地图时，如果地图为空会导致程序崩溃
+- 加载地图时，列数解析可能不准确
+- 空格字符处理不一致
+
+**修复内容**:
+1. **添加空地图检查** (第56-60行)
+   ```cpp
+   if (currentMap.empty()) {
+       cout << "ERROR: Current map is empty!" << endl;
+       saveFile.close();
+       return false;
+   }
+   ```
+   - 在访问 `currentMap[0].size()` 前先检查地图是否为空
+   - 避免数组越界导致的崩溃
+
+2. **改进地图加载逻辑** (第170行)
+   ```cpp
+   // 从 for (char c : line) 改为:
+   for (size_t j = 0; j < line.length(); j++) {
+       char c = line[j];
+       // ...
+   }
+   ```
+   - 使用索引遍历代替范围for循环，更稳定
+
+3. **添加列数验证** (第196-200行)
+   ```cpp
+   if (row.size() != cols) {
+       cout << "WARNING: Row " << i << " has " << row.size() 
+            << " columns, expected " << cols << endl;
+   }
+   ```
+   - 验证每行加载的列数是否正确
+   - 帮助调试地图加载问题
+
+### 修复2：移除Unicode字符 (end1.cpp)
+
+**问题描述**:
+- Dev-C++ 编译器无法处理 emoji 等 Unicode 字符
+- 编译时报错："converting to execution character set: Illegal byte sequence"
+
+**修复内容**:
+将所有 emoji 替换为 ASCII 字符：
+
+| 原字符 | 替换为 | 说明 |
+|--------|--------|------|
+| 🎉 | `***` | 庆祝符号 |
+| 📦 | `[P]` | 包裹 (Package) |
+| 👣 | `[M]` | 移动 (Moves) |
+| ⭐ | `[*]` | 星星 |
+| 📊 | `[%]` | 百分比 |
+| 🏆 | `[#]` | 奖杯 |
+| 🥈 | `[+]` | 银牌 |
+| 🥉 | `[=]` | 铜牌 |
+| 💀 | `XXX` | 失败标记 |
+| ⏰ | `[!]` | 警告 |
+| 🚪 | `[X]` | 退出 |
+| 🎯 | `[T]` | 目标 |
+
+**示例**:
+```cpp
+// 修改前:
+cout << "║              🎉 VICTORY CELEBRATION 🎉           ║" << endl;
+
+// 修改后:
+cout << "║              *** VICTORY CELEBRATION ***           ║" << endl;
+```
+
+### 修复3：主菜单逻辑优化 (main.cpp)
+
+**问题描述**:
+- while循环条件错误：`while(input != "Q" || input == "q")` 导致循环无法正常退出
+- 用户直接输入数字1-4无法选择菜单项
+
+**修复内容**:
+1. **修复循环条件** (第383行)
+   ```cpp
+   // 修改前:
+   while(input != "Q" || input == "q")  // ❌ 逻辑错误
    
-2. **Controls:**
-   - Use the following keys to control your character:
-      - **`W`**: Move up
-      - **`A`**: Move left
-      - **`S`**: Move down
-      - **`D`**: Move right
-      - **`Q`**: Quit the game without saving
-      - **`V`**: Save the game then Quit
-     - Important: The package is **automatically picked up and delivered** when the player passed package and customer respectively.
+   // 修改后:
+   while(input != "Q" && input != "q")  // ✅ 正确逻辑
+   ```
 
-3. **Completion and Scoring:**
-   - **Win**: Player delivered all Packages within step limits. The Success Page also show player's efficiency. 
-   - **Lose**: Player is unabled to delivered all Packages within step limits. Or player quit the game without saving.
+2. **添加直接数字输入支持** (第394-406行)
+   ```cpp
+   else if(input == "1") {
+       currentlySelecting = 0;
+       printInstructions();
+       cin >> input;
+   } else if(input == "2") {
+       currentlySelecting = 1;
+       break;
+   } else if(input == "3") {
+       currentlySelecting = 2;
+       break;
+   } else if(input == "4") {
+       currentlySelecting = 3;
+       break;
+   }
+   ```
+   - 现在支持直接输入数字1-4选择菜单
+   - 保留原有的W/S导航+E确认方式
 
---------------------------
-## Non-Standard Libraries 📖
-   N/A
+---
 
---------------------------
-## Compilation 💻
-1. Open a terminal and navigate to the project's root directory:
-   ```bash
-   cd group60
-2. Compile the game using the make command:
-   ```bash
-   make
-3. If you don't have make, manually compile the game with the following command:
-   ```bash
-   g++ main.cpp player.cpp saveprogress.cpp end1.cpp -o delivery_game.exe
-4. Run the game:
-   ```bash
-   ./delivery_game.exe
---------------------------
-# **🎉Happy Gaming 🎉**
+## 编译方法
+
+### 方法1：使用 Dev-C++ (推荐)
+
+1. **打开 Dev-C++**
+
+2. **创建新项目**
+   - 点击 `文件` → `新建` → `项目`
+   - 选择 `Console Application` (控制台应用程序)
+   - 选择 `C++ 项目`
+   - 项目名称：`delivery_game`
+   - 保存位置：选择 `d:\AAAdelivery_game` 文件夹
+
+3. **添加源文件到项目**
+   - 点击 `项目` → `添加到项目`
+   - 依次添加以下文件：
+     - `main.cpp`
+     - `end1.cpp`
+     - `saveprogress.cpp`
+     - `player.cpp`
+   - 头文件 (.h) 会自动识别
+
+4. **设置编译选项**
+   - 点击 `工具` → `编译选项`
+   - 在 `编译器` 标签下，确保选中 `-std=c++11` 或更高版本
+   - 如果没有，在 `在编译时加入以下命令` 中添加：`-std=c++11`
+
+5. **编译并运行**
+   - 按 **F9** 键，或点击工具栏的 `编译并运行` 按钮
+   - 等待编译完成，游戏会自动启动
+
+### 方法2：使用命令行 (Make)
+
+如果你安装了 MinGW 和 Make 工具：
+
+```bash
+# 进入项目目录
+cd d:\AAAdelivery_game
+
+# 编译项目
+make
+
+# 运行游戏
+./delivery_game.exe
+```
+
+或者一步完成：
+```bash
+make run
+```
+
+清理编译文件：
+```bash
+make clean
+```
+
+### 方法3：使用 CMD 命令行运行（推荐）
+
+这是最简单直接的方法，适合所有用户。
+
+#### 步骤1：打开命令提示符 (CMD)
+
+**方式1 - 使用快捷键**:
+- 按 `Win + R` 键
+- 输入 `cmd`
+- 按回车键
+
+**方式2 - 从开始菜单**:
+- 点击开始菜单
+- 搜索 `cmd` 或 `命令提示符`
+- 点击打开
+
+**方式3 - 从文件夹直接打开**:
+- 打开文件资源管理器
+- 进入 `d:\AAAdelivery_game` 文件夹
+- 在地址栏输入 `cmd` 并按回车（会直接在当前目录打开CMD）
+
+#### 步骤2：进入项目目录
+
+如果CMD没有在项目目录中打开，需要先进入项目所在目录：
+
+```cmd
+cd /d d:\AAAdelivery_game
+```
+
+**注意**: 
+- 使用 `cd /d` 可以跨盘符切换目录
+- 如果路径包含空格，需要用双引号：`cd /d "d:\My Games\AAAdelivery_game"`
+
+#### 步骤3：验证文件是否存在
+
+查看当前目录下的文件：
+
+```cmd
+dir
+```
+
+你应该能看到以下文件：
+- `main.cpp`
+- `end1.cpp`
+- `saveprogress.cpp`
+- `player.cpp`
+- `Makefile`
+- 等等...
+
+#### 步骤4A：编译项目（如果有 MinGW 和 Make）
+
+如果你安装了 MinGW 和 Make 工具：
+
+```cmd
+make
+```
+
+或者一步到位（编译并运行）：
+
+```cmd
+make run
+```
+
+#### 步骤4B：手动编译（如果没有 Make）
+
+如果没有 Make 工具，可以直接使用 g++ 编译：
+
+```cmd
+g++ -std=c++11 -Wall -Wextra -O2 -o delivery_game.exe main.cpp end1.cpp saveprogress.cpp player.cpp
+```
+
+**如果提示 "g++ 不是内部或外部命令"**：
+- 说明你没有安装 MinGW 或没有配置环境变量
+- 请使用 **方法1（Dev-C++）** 来编译
+
+#### 步骤5：运行游戏
+
+编译成功后，运行游戏：
+
+```cmd
+delivery_game.exe
+```
+
+或者：
+
+```cmd
+.\delivery_game.exe
+```
+
+#### 完整示例（从头到尾）
+
+```cmd
+# 1. 打开CMD，进入项目目录
+cd /d d:\AAAdelivery_game
+
+# 2. 查看文件
+dir
+
+# 3. 编译（选择一种方式）
+make                    # 如果有 Make
+# 或
+g++ -std=c++11 -Wall -Wextra -O2 -o delivery_game.exe main.cpp end1.cpp saveprogress.cpp player.cpp
+
+# 4. 运行游戏
+delivery_game.exe
+```
+
+#### CMD 常用命令
+
+| 命令 | 说明 |
+|------|------|
+| `cd /d d:\path` | 切换到指定目录 |
+| `dir` | 查看当前目录文件 |
+| `cls` | 清屏 |
+| `exit` | 退出CMD |
+| `tasklist` | 查看运行中的进程 |
+| `taskkill /F /IM 程序名.exe` | 强制关闭进程 |
+
+### 方法4：使用 Dev-C++ 编译后用 CMD 运行
+
+如果你已经在 Dev-C++ 中编译了项目：
+
+1. 编译后会生成 `AAAdelivery_game.exe`（或其他名字）
+2. 打开 CMD 并进入项目目录
+3. 运行：
+   ```cmd
+   AAAdelivery_game.exe
+   ```
+
+---
+
+## 常见编译问题
+
+### 问题1：权限被拒绝 (Permission denied)
+**原因**: 游戏程序正在运行中，无法覆盖 .exe 文件
+
+**解决方法**:
+1. 关闭所有正在运行的游戏窗口
+2. 打开任务管理器，结束 `AAAdelivery_game.exe` 进程
+3. 或使用命令：`taskkill /F /IM AAAdelivery_game.exe`
+4. 重新编译
+
+### 问题2：找不到头文件
+**解决方法**: 确保所有 .h 文件和 .cpp 文件在同一目录下
+
+### 问题3：编码错误
+**解决方法**: 确保文件编码为 UTF-8，并且 Dev-C++ 编译器支持 C++11
+
+---
+
+## 游戏操作指南
+
+### 主菜单
+
+游戏启动后会显示主菜单，有以下选项：
+
+```
+[1] Game Instructions    - 查看游戏说明
+[2] New Easy Game        - 开始简单模式（小地图，2个包裹）
+[3] New Hard Game        - 开始困难模式（大地图，5个包裹）
+[4] Continue Game        - 继续上次保存的游戏
+```
+
+**操作方式**:
+- **方式1**: 直接输入数字 `1`、`2`、`3` 或 `4`，然后按回车
+- **方式2**: 使用 `W`/`S` 键上下选择，按 `E` 键确认
+- **退出**: 按 `Q` 键退出游戏
+
+### 游戏中的操作
+
+#### 移动控制
+- **W** - 向上移动
+- **A** - 向左移动
+- **S** - 向下移动
+- **D** - 向右移动
+- 输入方向键后按 **回车** 确认移动
+
+#### 其他操作
+- **V** - 保存当前游戏进度
+- **Q** - 退出游戏并返回主菜单
+
+### 地图符号说明
+
+| 符号 | 含义 |
+|------|------|
+| `P`  | 玩家位置 |
+| `#`  | 墙壁（不可通过）|
+| `1`, `2`, `3`... | 包裹编号 |
+| `C`  | 客户位置 |
+| 空格 | 可通行的道路 |
+
+### 游戏规则
+
+1. **目标**: 在限定步数内，收集所有包裹并送到客户 (C) 处
+
+2. **收集包裹**: 
+   - 走到包裹位置会自动拾取
+   - 拾取的包裹会显示在背包中
+
+3. **送货**: 
+   - 携带包裹走到客户 (C) 位置
+   - 会自动交付所有背包中的包裹
+
+4. **步数限制**:
+   - **简单模式**: 最短路径步数 × 2
+   - **困难模式**: 最短路径步数 + 2
+
+5. **胜利条件**: 
+   - 所有包裹都已送达客户
+   - 剩余步数 ≥ 0
+
+6. **失败条件**:
+   - 步数用完但还有包裹未送达
+   - 主动退出游戏 (按 Q)
+
+### 游戏界面信息
+
+游戏中会显示以下信息：
+
+```
+Move count: 5 / 20          - 当前步数 / 总步数限制
+Packages remaining: 1 / 2   - 剩余包裹 / 总包裹数
+Player inventory: { | Package 1 | }  - 背包中的包裹
+```
+
+**颜色提示**:
+- **绿色**: 状态良好
+- **黄色**: 需要注意
+- **红色**: 危险或失败
+
+---
+
+## 游戏存档
+
+### 保存游戏
+- 在游戏中按 `V` 键
+- 系统会将当前进度保存到 `game_save.txt`
+- 保存内容包括：
+  - 玩家位置
+  - 背包物品
+  - 剩余包裹位置
+  - 当前步数
+  - 地图状态
+
+### 加载游戏
+- 在主菜单选择 `[4] Continue Game`
+- 如果没有存档文件，会提示 "No saved game found!"
+
+### 存档文件位置
+- 文件名: `game_save.txt`
+- 位置: `d:\AAAdelivery_game\game_save.txt` (项目目录)
+
+---
+
+## 游戏技巧
+
+1. **规划路线**: 开始前先观察地图，规划最短路径
+2. **一次多拿**: 尽量一次性收集多个包裹再送货，减少往返
+3. **避免绕路**: 注意墙壁位置，避免走弯路浪费步数
+4. **善用存档**: 在关键位置保存游戏，避免重头开始
+5. **计算步数**: 随时关注剩余步数，合理安排路线
+
+---
+
+## 难度对比
+
+| 特性 | 简单模式 (Easy) | 困难模式 (Hard) |
+|------|----------------|----------------|
+| 地图大小 | 较小 | 较大 |
+| 包裹数量 | 2 个 | 5 个 |
+| 步数限制 | 最短路径 × 2 | 最短路径 + 2 |
+| 难度 | ⭐⭐ | ⭐⭐⭐⭐⭐ |
+
+---
+
+## 结算画面
+
+### 胜利画面
+显示以下信息：
+- 包裹送达数量
+- 使用的步数
+- 剩余步数
+- 送货效率百分比
+- 评级（根据效率）:
+  - **效率 > 80%**: 🏆 卓越表现！大师级快递员！
+  - **效率 > 60%**: 🥈 干得好！专业送货！
+  - **其他**: 🥉 任务完成！做得不错！
+
+### 失败画面
+显示以下信息：
+- 已送达包裹数量
+- 使用的步数
+- 完成率百分比
+- 失败原因（步数用完或主动退出）
+
+---
+
+## 文件说明
+
+| 文件名 | 说明 |
+|--------|------|
+| `main.cpp` | 主程序，包含游戏主循环和菜单 |
+| `player.h` / `player.cpp` | 玩家类定义和实现 |
+| `saveprogress.h` / `saveprogress.cpp` | 游戏存档和加载功能 |
+| `end1.h` / `end1.cpp` | 游戏结束画面显示 |
+| `Makefile` | Make 编译配置文件 |
+| `game_save.txt` | 游戏存档文件（运行时生成）|
+
+---
+
+## 故障排除
+
+### 游戏无法启动
+1. 检查是否正确编译
+2. 确认所有源文件都已添加到项目
+3. 检查编译器是否支持 C++11
+
+### 颜色显示异常
+- 某些终端可能不支持 ANSI 颜色代码
+- 尝试使用 Windows Terminal 或其他支持彩色的终端
+
+### 菜单选择无响应
+- 确保输入数字后按回车键
+- 或使用 W/S 导航 + E 确认
+
+### 存档无法加载
+1. 检查 `game_save.txt` 是否存在
+2. 确保文件没有被其他程序占用
+3. 文件可能损坏，尝试开始新游戏
+
+---
+
+## 联系与反馈
+
+如有问题或建议，欢迎反馈！
+
+**祝你游戏愉快！Good Luck! 🎮**

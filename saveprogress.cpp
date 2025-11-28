@@ -13,7 +13,7 @@ bool saveGameProgress(Player* p, const vector<pair<int, int> >& packageLocs,
                      const pair<int, int>& customerLoc, int moveCount, 
                      int stepLimits, int numPackages, const string& difficulty, const vector<vector<string>>& currentMap) {  
 
-    string filename = "game_save.txt";
+    string filename = "d:\\AAAdelivery_game\\game_save.txt";
     
     // delete previously saved file
     remove(filename.c_str());
@@ -24,6 +24,7 @@ bool saveGameProgress(Player* p, const vector<pair<int, int> >& packageLocs,
         return false;
     }
     
+    // 添加调试信息
     cout << "DEBUG: Starting save process..." << endl;
     cout << "DEBUG: Map size: " << currentMap.size() << "x" 
          << (currentMap.empty() ? 0 : currentMap[0].size()) << endl;
@@ -50,6 +51,7 @@ bool saveGameProgress(Player* p, const vector<pair<int, int> >& packageLocs,
         saveFile << loc.first << " " << loc.second << endl;
     }
 
+    // 确保地图数据被保存 - 添加详细调试
     cout << "DEBUG: Saving map data now..." << endl;
     if (currentMap.empty()) {
         cout << "ERROR: Current map is empty!" << endl;
@@ -59,12 +61,13 @@ bool saveGameProgress(Player* p, const vector<pair<int, int> >& packageLocs,
     
     cout << "DEBUG: Map dimensions: " << currentMap.size() << "x" << currentMap[0].size() << endl;
     
-    // save map size
+    // 保存地图尺寸
     saveFile << currentMap.size() << " " << currentMap[0].size() << endl;
     
-    // save map content
+    // 保存地图内容
     for (int i = 0; i < currentMap.size(); i++) {
         for (int j = 0; j < currentMap[i].size(); j++) {
+            // 处理空格字符 - 如果是空格就保存为"_"，避免加载时解析问题
             if (currentMap[i][j] == " ") {
                 saveFile << "_ ";
             } else {
@@ -73,6 +76,7 @@ bool saveGameProgress(Player* p, const vector<pair<int, int> >& packageLocs,
         }
         saveFile << endl;
         
+        // 调试输出前几行
         if (i < 2) {
             cout << "DEBUG: Saved row " << i << endl;
         }
@@ -80,6 +84,7 @@ bool saveGameProgress(Player* p, const vector<pair<int, int> >& packageLocs,
     
     saveFile.close();
     
+    // 验证保存结果
     ifstream checkFile(filename);
     if (checkFile.is_open()) {
         string line;
@@ -147,12 +152,13 @@ bool loadGameProgress(Player*& p, vector<pair<int, int> >& packageLocs,
         packageLocs.push_back({x, y});
     }
     
+    // 加载地图数据
     int rows, cols;
     saveFile >> rows >> cols;
     cout << "DEBUG: Loading map of size " << rows << "x" << cols << endl;
     
     currentMap.clear();
-    saveFile.ignore(); 
+    saveFile.ignore(); // 跳过换行符
     
     for (int i = 0; i < rows; i++) {
         string line;
@@ -161,10 +167,12 @@ bool loadGameProgress(Player*& p, vector<pair<int, int> >& packageLocs,
         vector<string> row;
         string cell;
         
+        // 解析空格分隔的单元格
         for (size_t j = 0; j < line.length(); j++) {
             char c = line[j];
             if (c == ' ') {
                 if (!cell.empty()) {
+                    // 将"_"转换回空格
                     if (cell == "_") {
                         row.push_back(" ");
                     } else {
@@ -177,6 +185,7 @@ bool loadGameProgress(Player*& p, vector<pair<int, int> >& packageLocs,
             }
         }
         
+        // 处理最后一个单元格
         if (!cell.empty()) {
             if (cell == "_") {
                 row.push_back(" ");
@@ -185,6 +194,7 @@ bool loadGameProgress(Player*& p, vector<pair<int, int> >& packageLocs,
             }
         }
         
+        // 验证列数是否正确
         if (row.size() != cols) {
             cout << "WARNING: Row " << i << " has " << row.size() 
                  << " columns, expected " << cols << endl;
